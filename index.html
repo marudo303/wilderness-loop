@@ -85,7 +85,28 @@
     .theater #yt-player,.theater iframe { height:100% !important; width:100% !important; }
     .video-shell:fullscreen,.video-shell:-webkit-full-screen { width:100vw !important; height:100vh !important; min-height:0 !important; background:#000; border-radius:0; }
     .video-shell:fullscreen #yt-player,.video-shell:fullscreen iframe,.video-shell:-webkit-full-screen #yt-player,.video-shell:-webkit-full-screen iframe { width:100% !important; height:100% !important; }
-    .theater-actions { position:absolute; top:max(13px,env(safe-area-inset-top)); right:18px; z-index:4; display:flex; gap:8px; }
+    /* YouTube embeds render 16:9 inside their own iframe. Merely setting that
+       iframe to 100% x 100% pillarboxes a 16:9 clip on ultrawide phones.
+       Instead size the 16:9 iframe to COVER the stage, crop the overflow,
+       and leave the embedded YouTube player/API in place. */
+    .theater.fill-cinema #yt-player,
+    .theater.fill-cinema iframe,
+    .video-shell:fullscreen.fill-cinema #yt-player,
+    .video-shell:fullscreen.fill-cinema iframe,
+    .video-shell:-webkit-full-screen.fill-cinema #yt-player,
+    .video-shell:-webkit-full-screen.fill-cinema iframe {
+      position:absolute !important;
+      width:var(--cinema-iframe-width, 100%) !important;
+      height:var(--cinema-iframe-height, 100%) !important;
+      top:50% !important;
+      left:50% !important;
+      transform:translate(-50%, -50%) !important;
+      max-width:none !important;
+      border:0 !important;
+    }
+    .theater-actions { position:absolute; top:max(13px,env(safe-area-inset-top)); right:max(18px,env(safe-area-inset-right)); left:max(18px,env(safe-area-inset-left)); z-index:4; display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; pointer-events:none; }
+    .theater-actions button { pointer-events:auto; }
+
     .theater-actions button { background:rgba(15,23,17,.88); border-color:#62705f; }
     .cover.theater-cover { z-index:3; }
     .lightweight { color:var(--muted); font-size:12px; }
@@ -128,7 +149,7 @@
 <body>
 <header class="top"><div class="top-inner">
   <div><div class="eyebrow">Independent home cinema · The American Experience</div><h1>🌲 Wilderness <span style="color:var(--amber)">Loop</span></h1><div class="subtitle">Mountains · Logging · Trucks · Football · Rodeo</div></div>
-  <div class="badge">AMERICAN EXPERIENCE · V2.1.1 FULLSCREEN TEST</div>
+  <div class="badge">AMERICAN EXPERIENCE · V2.1.2 BEAMER-MODUS</div>
 </div></header>
 <main class="container">
   <nav class="main-nav" aria-label="Wilderness Loop Navigation">
@@ -153,7 +174,7 @@
         <div class="video-shell" id="video-shell">
           <div id="yt-player"></div>
           <div id="cover" class="cover"><div class="symbol">🏔️</div><h2>American Experience</h2><p>Dein persönlicher Video-Mix. Klicke auf START, um die YouTube-Ausschnitte stumm abzuspielen.</p><button type="button" class="btn btn-primary" id="cover-start">▶ VIDEO-SCHLEIFE STARTEN</button></div>
-          <div class="theater-actions hidden" id="theater-actions"><button class="btn btn-small" id="theater-next" type="button">⏭ Weiter</button><button class="btn btn-small" id="theater-close" type="button">✕ Schließen</button></div>
+          <div class="theater-actions hidden" id="theater-actions"><button class="btn btn-small" id="theater-next" type="button">⏭ Weiter</button><button class="btn btn-small" id="theater-fill" type="button" aria-pressed="true" title="Bildfüllende Wiedergabe: kann Bildränder abschneiden">🔎 Füllen: AN</button><button class="btn btn-small" id="theater-close" type="button">✕ Schließen</button></div>
         </div>
         <div class="box-pad">
           <div class="now"><span class="chip" id="now-category">BEREIT</span><strong id="now-title">Deine American Experience wartet</strong></div>
@@ -164,7 +185,7 @@
             <button type="button" class="btn" id="btn-next">⏭ NÄCHSTER CLIP</button>
             <button type="button" class="btn" id="btn-mode">🔀 SMART MIX: AUS</button>
             <button type="button" class="btn active" id="btn-loop">🔁 LOOP: AN</button>
-            <button type="button" class="btn" id="btn-cinema">⛶ VOLLBILD / KINOMODUS</button>
+            <button type="button" class="btn" id="btn-cinema">⛶ BEAMER-/KINOMODUS</button>
             <button type="button" class="btn btn-quiet" id="btn-good" title="Aktuellen Clip als passend markieren">👍 PASST</button>
             <button type="button" class="btn btn-quiet" id="btn-bad" title="Aktuellen Clip zur Überarbeitung markieren">👎 ÄNDERN</button>
           </div>
@@ -404,6 +425,40 @@
     playCurrent();
   }
   function nextClip(){if(!clips.length)return; switching=false;clipSwitchToken++;advance();}
+  // Cover/contain switch for ultrawide phone displays and iPad/AirPlay/HDMI.
+  // Does NOT bypass YouTube embeds or remove black bars baked into source
+  // videos, or bars introduced by hardware-level AirPlay mirroring.
+  let fillCinema = true;
+  let cinemaResizeRAF = 0;
+  function updateCinemaCrop() {
+    const shell=byId('video-shell');
+    const button=byId('theater-fill');
+    button.textContent=fillCinema?'🔎 Füllen: AN':'▣ Originalformat';
+    button.setAttribute('aria-pressed',String(fillCinema));
+    button.title=fillCinema?'Bildfüllend: obere/untere oder seitliche Bildteile werden ggf. abgeschnitten. Tippen für Originalformat.':'Originalformat mit vollständigem Bild. Tippen zum bildfüllenden Zoomen.';
+    shell.classList.toggle('fill-cinema',isCinema && fillCinema);
+    if(!isCinema || !fillCinema) {
+      shell.style.removeProperty('--cinema-iframe-width');
+      shell.style.removeProperty('--cinema-iframe-height');
+      return;
+    }
+    // Use actual stage geometry, not screen orientation assumptions. Compute
+    // a 16:9 rectangle large enough to completely cover the viewport.
+    const box=shell.getBoundingClientRect();
+    const w=box.width || window.innerWidth;
+    const h=box.height || window.innerHeight;
+    const mediaW=Math.max(w,h*(16/9));
+    const mediaH=mediaW*(9/16);
+    shell.style.setProperty('--cinema-iframe-width',Math.ceil(mediaW+2)+'px');
+    shell.style.setProperty('--cinema-iframe-height',Math.ceil(mediaH+2)+'px');
+  }
+  function scheduleCinemaCrop(){
+    cancelAnimationFrame(cinemaResizeRAF);
+    cinemaResizeRAF=requestAnimationFrame(updateCinemaCrop);
+  }
+  window.addEventListener('resize',scheduleCinemaCrop);
+  window.addEventListener('orientationchange',()=>setTimeout(scheduleCinemaCrop,250));
+  if(window.visualViewport) window.visualViewport.addEventListener('resize',scheduleCinemaCrop);
   // iPadOS 16.4+ supports true fullscreen for arbitrary page elements. Keep a
   // cinema-mode CSS fallback for browsers/AirPlay mirroring that reject it.
   async function showCinema(on){
@@ -413,24 +468,28 @@
       shell.classList.add('theater');
       byId('theater-actions').classList.remove('hidden');
       document.body.style.overflow='hidden';
+      updateCinemaCrop();
       try {
         if(typeof shell.requestFullscreen==='function'){
           await shell.requestFullscreen();
-          status('Echter Vollbildmodus aktiv. Im Querformat testen.');
+          scheduleCinemaCrop();
+          status('Beamer-Modus aktiv. 🔎 Füllen: AN entfernt äußere 16:9-Ränder durch leichtes Beschneiden.');
         } else if(typeof shell.webkitRequestFullscreen==='function'){
           await shell.webkitRequestFullscreen();
-          status('Echter Vollbildmodus aktiviert.');
+          scheduleCinemaCrop();
+          status('Beamer-Modus aktiviert. 🔎 Füllen: AN kann Bildränder beschneiden.');
         } else {
-          status('Kinomodus aktiv. Dieser Browser bietet kein echtes Element-Vollbild. Die AirPlay-Bildschirmspiegelung kann schwarze Ränder behalten.');
+          status('Beamer-Modus aktiv. 🔎 Füllen: AN vergrößert das YouTube-Bild. AirPlay-Spiegelung kann zusätzlich eigene Ränder erzeugen.');
         }
       } catch(e){
-        status('Kinomodus aktiv. Echter Vollbildmodus wurde von Safari/AirPlay nicht zugelassen; bitte Querformat oder HDMI testen.');
+        status('Beamer-Modus aktiv (CSS-Vollbild). Mit 🔎 Füllen / Originalformat kannst du die Bildränder einstellen.');
       }
     } else {
       isCinema=false;
       shell.classList.remove('theater');
       byId('theater-actions').classList.add('hidden');
       document.body.style.overflow='';
+      updateCinemaCrop();
       if(document.fullscreenElement || document.webkitFullscreenElement){
         try {
           if(document.exitFullscreen) await document.exitFullscreen();
@@ -439,14 +498,10 @@
       }
     }
   }
-  // If the user leaves fullscreen via Safari's gesture/escape, restore the UI.
+  // Preserve the CSS beamer mode if WebKit or YouTube exits native fullscreen
+  // during an automatic clip transition. Use "✕ Schließen" to leave the mode.
   function onNativeFullscreenChange(){
-    if(!document.fullscreenElement && !document.webkitFullscreenElement && isCinema){
-      isCinema=false;
-      byId('video-shell').classList.remove('theater');
-      byId('theater-actions').classList.add('hidden');
-      document.body.style.overflow='';
-    }
+    if(isCinema) scheduleCinemaCrop();
   }
   document.addEventListener('fullscreenchange',onNativeFullscreenChange);
   document.addEventListener('webkitfullscreenchange',onNativeFullscreenChange);
@@ -469,6 +524,7 @@
   byId('btn-loop').addEventListener('click',()=>{loop=!loop;save();render();});
   byId('btn-mode').addEventListener('click',()=>{mode=mode==='classic'?'mix':'classic';save();refreshOrder();render();status(mode==='mix'?'Smart Mix aktiviert. Beim nächsten Start werden Clips nach Kategorien gewichtet gemischt.':'Klassische Reihenfolge aktiviert.');});
   byId('btn-cinema').addEventListener('click',()=>showCinema(!isCinema));byId('theater-close').addEventListener('click',()=>showCinema(false));
+  byId('theater-fill').addEventListener('click',()=>{fillCinema=!fillCinema;updateCinemaCrop();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isCinema)showCinema(false);});
   byId('export-btn').addEventListener('click',()=>{const content=JSON.stringify({app:'Wilderness Loop',version:2,exportedAt:new Date().toISOString(),clips},null,2);const blob=new Blob([content],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wilderness-loop-backup.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Backup als JSON-Datei erstellt. Im Dateien-Ordner speichern.');});
   byId('import-btn').addEventListener('click',()=>byId('import-file').click());
