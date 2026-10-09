@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="Ein persönlicher American Experience Videoplayer mit YouTube-Clips, Zeitmarken und Endlosschleife.">
-  <title>Timberjacks TV — American Experience</title>
+  <title>Wilderness Loop — The American Experience</title>
   <style>
     :root { color-scheme: dark; --bg:#101512; --panel:#19221d; --panel2:#202b23; --line:#334338; --txt:#eff1e9; --muted:#a9b7a9; --amber:#e8b56b; --amber2:#bd8044; --green:#85a88f; --danger:#e79e91; }
     * { box-sizing: border-box; }
@@ -87,19 +87,66 @@
     .theater-actions button { background:rgba(15,23,17,.88); border-color:#62705f; }
     .cover.theater-cover { z-index:3; }
     .lightweight { color:var(--muted); font-size:12px; }
-    @media(max-width:850px) { .layout { grid-template-columns:1fr; } .list { max-height:400px; } .container { padding-top:13px; } }
+  
+  .main-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .main-nav a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#e9ecdf;border:1px solid #4b614f;padding:10px 14px;background:#1e2c22;border-radius:9px;font-weight:800;font-size:12px;letter-spacing:.05em}
+  .main-nav a.main-nav-active{border-color:var(--amber);color:var(--amber)}
+  .playlist-home{margin-bottom:20px}
+  .playlist-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px;background:linear-gradient(125deg,#293a2e,#17221b 66%)}
+  .playlist-hero p{margin:7px 0 0;color:#d6ddd2}
+  .playlist-title{font-size:clamp(18px,3vw,29px);line-height:1.15;margin:9px 0 0;letter-spacing:.035em}
+  .playlist-actions{display:flex;flex-direction:column;gap:7px;min-width:200px}
+  .playlist-actions a{font-size:12px;text-align:center}
+  .warning{background:#352e23;border-left:3px solid #d4a66c;border-radius:3px;padding:10px;margin-top:16px;max-width:690px;color:#eadabe;font-size:12px}
+  .playlist-stats{display:flex;gap:8px;flex-wrap:wrap;background:#18241c;border-bottom:1px solid var(--line);padding:12px 20px}
+  .playlist-stat{display:inline-block;color:#e0e9d9;background:#263628;border:1px solid #375341;padding:6px 9px;border-radius:20px;font-size:12px}
+  .playlist-stat b{color:var(--amber)}
+  .playlist-filters{padding:13px 18px 7px;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+  .playlist-filters h3{margin:0;font-size:12px;letter-spacing:.13em}
+  .playlist-blocks{padding:0 14px 15px}
+  .playlist-block{background:#1b271f;border:1px solid var(--line);border-radius:9px;margin:9px 0;overflow:hidden}
+  .playlist-block summary{cursor:pointer;padding:13px 14px;color:var(--amber);font-weight:800;font-size:13px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+  .playlist-block summary::marker{content:''}
+  .playlist-scroll{overflow-x:auto}
+  .playlist-table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap;text-align:left}
+  .playlist-table th{color:#c7d9c4;font-size:10px;letter-spacing:.08em;background:#27362b;padding:10px;border-top:1px solid var(--line)}
+  .playlist-table td{padding:9px 10px;border-top:1px solid #304033;color:#dee5d9}
+  .playlist-table tr:nth-child(even){background:#202e24}
+  .playlist-table td.clip-name{white-space:normal;min-width:155px;max-width:480px;font-weight:700}
+  .playlist-table .yt-link{color:var(--amber);text-decoration:underline}
+  .playlist-table .cue-hint{font-size:10px;color:var(--muted)}
+  .pick-btn{background:#2a402c;border:1px solid #52755b;border-radius:5px;color:#fff;min-height:32px;padding:5px 9px;font-size:12px}
+  #playlist,#player,#editor{scroll-margin-top:16px}
+  @media(max-width:710px){.playlist-hero{flex-direction:column;align-items:stretch;padding:17px}.playlist-actions{min-width:0}.playlist-filters{align-items:start;flex-direction:column}.playlist-block summary{font-size:12px}.playlist-table td{padding:8px 8px}}
+  @media(max-width:850px) { .layout { grid-template-columns:1fr; } .list { max-height:400px; } .container { padding-top:13px; } }
     @media(max-width:460px) { .top { padding:14px; } .box-pad { padding:13px; } .playbar .btn { flex:1 1 43%; } .video-shell { min-height:190px; } .row-actions { flex-wrap:wrap; max-width:80px; justify-content:end; } .formgrid { gap:9px; } }
     @media(prefers-reduced-motion:reduce) { * { transition:none !important; } }
   </style>
 </head>
 <body>
 <header class="top"><div class="top-inner">
-  <div><div class="eyebrow">Independent home cinema · The American Experience</div><h1>🪵 Timberjacks <span style="color:var(--amber)">TV</span></h1><div class="subtitle">Mountains · Logging · Trucks · Football · Rodeo</div></div>
-  <div class="badge">PRIVATE PLAYLIST PROJECT · V1.0</div>
+  <div><div class="eyebrow">Independent home cinema · The American Experience</div><h1>🌲 Wilderness <span style="color:var(--amber)">Loop</span></h1><div class="subtitle">Mountains · Logging · Trucks · Football · Rodeo</div></div>
+  <div class="badge">AMERICAN EXPERIENCE · V2.0 BETA</div>
 </div></header>
 <main class="container">
+  <nav class="main-nav" aria-label="Wilderness Loop Navigation">
+    <a href="#playlist" class="main-nav-active">① PLAYLIST</a><a href="#player">② PLAYER</a><a href="#editor">③ CLIP-EDITOR</a>
+  </nav>
+  <section id="playlist" class="playlist-home box">
+    <div class="playlist-hero">
+      <div><div class="eyebrow">DEINE SAMMLUNG · 5 KAPITEL</div>
+       <h2 class="playlist-title">🎞️ THE 10-HOUR EXPERIENCE</h2>
+       <p>75 Clips · 10 Stunden geplanter Bildmix · Montana · Holzfäller · Trucks · NFL · Rodeo</p>
+       <div class="warning">🟠 <strong>Kuratiertes Beta-Programm:</strong> Links recherchiert und Zeitfenster festgelegt. Einige Zeitfenster wurden noch nicht Szene für Szene geprüft. Wenn ein Video zu kurz ist oder Einbettung sperrt, können wir den Ausschnitt nach dem Praxistest austauschen.</div>
+      </div>
+      <div class="playlist-actions"><button type="button" class="btn btn-primary" id="btn-playlist-start">▶ 10H-PLAYLIST STARTEN</button><a href="#player" class="btn btn-quiet">Zum Player ↓</a></div>
+    </div>
+    <div class="playlist-stats" id="playlist-stats"></div>
+    <div class="playlist-filters"><h3>ABLAUF & YOUTUBE-QUELLEN</h3><span class="dim">Clip wählen, Videoquelle öffnen oder Zeitmarke im Editor ändern.</span></div>
+    <div class="playlist-blocks" id="playlist-blocks"></div>
+  </section>
   <div class="layout">
-    <section>
+    <section id="player">
       <div class="box">
         <div class="video-shell" id="video-shell">
           <div id="yt-player"></div>
@@ -122,7 +169,7 @@
         </div>
       </div>
       <div class="notice"><strong>Wichtig für iPad und YouTube:</strong> Automatisches Weiterschalten funktioniert nur bei einbettbaren Videos und kann durch Werbung oder iPadOS eingeschränkt werden. Falls ein Video nicht startet, erneut auf START drücken oder NÄCHSTER CLIP wählen. Dieser Player lädt keine Videos herunter.</div>
-      <div class="box edit-panel">
+      <div class="box edit-panel" id="editor">
         <div class="box-pad"><div class="section-head"><h2 class="section-title" id="edit-heading">+ YouTube-Ausschnitt hinzufügen</h2><span class="dim">Bibliothek bearbeiten</span></div>
           <form id="clip-form">
             <div class="formgrid">
@@ -139,33 +186,29 @@
       </div>
     </section>
     <aside class="box">
-      <div class="side-head"><div class="section-head" style="margin-bottom:2px"><h2 class="section-title">🎞️ Meine Videobibliothek</h2><span class="dim" id="count-side">0 Clips</span></div>
+      <div class="side-head"><div class="section-head" style="margin-bottom:2px"><h2 class="section-title">🎞️ Clips & Reihenfolge</h2><span class="dim" id="count-side">0 Clips</span></div>
         <div class="lightweight">Antippen, bearbeiten, verschieben – alles direkt hier.</div>
-        <div class="side-tools"><button type="button" class="btn btn-small" id="export-btn">⬇ Backup</button><button type="button" class="btn btn-small" id="import-btn">⬆ Importieren</button><button type="button" class="btn btn-small" id="reset-btn">↺ Beispiele</button><input type="file" accept=".json,application/json" id="import-file" class="hidden"></div>
+        <div class="side-tools"><button type="button" class="btn btn-small" id="export-btn">⬇ Backup</button><button type="button" class="btn btn-small" id="import-btn">⬆ Importieren</button><button type="button" class="btn btn-small" id="reset-btn">↺ 10h laden</button><input type="file" accept=".json,application/json" id="import-file" class="hidden"></div>
       </div>
       <div class="list" id="clip-list"></div>
       <div class="box-pad lightweight" style="border-top:1px solid var(--line)">🔀 <strong>Smart Mix:</strong> Natur 45 %, Holz 15 %, Trucks 15 %, Football 15 %, Western 10 %. Es werden verfügbare Clips ausgewählt und möglichst abwechslungsreich gemischt.<br><br>💾 Deine Änderungen werden automatisch <strong>in diesem Browser auf diesem Gerät</strong> gespeichert. Mit „Backup“ kannst du sie als Datei sichern oder auf ein anderes Gerät übertragen.</div>
     </aside>
   </div>
-  <footer>Inoffizielles, privates Fanprojekt – keine Verbindung zum Restaurantbetreiber. Die Videos werden über den offiziellen YouTube-Einbettungsplayer wiedergegeben. Internet erforderlich.</footer>
+  <footer>Privates, unabhängiges Video-Projekt. Die Videos werden über den offiziellen YouTube-Einbettungsplayer wiedergegeben. Internet erforderlich.</footer>
 </main>
 <script>
 (() => {
   'use strict';
-  const KEY = 'timberjacks-tv-v1-clips';
-  const SETTINGS_KEY = 'timberjacks-tv-v1-settings';
+  const KEY = 'wilderness-loop-v2-clips';
+  const OLD_KEY = 'timberjacks-tv-v1-clips';
+  const SETTINGS_KEY = 'wilderness-loop-v2-settings';
+  const OLD_SETTINGS_KEY = 'timberjacks-tv-v1-settings';
   const categories = { nature: '🏔️ Natur', logging: '🪓 Holz', trucks: '🚛 Trucks', football: '🏈 Football', western: '🤠 Western' };
   const weights = { nature:.45, logging:.15, trucks:.15, football:.15, western:.10 };
-  // Kurze Test-Ausschnitte statt der späteren fünfstündigen Bibliothek.
-  // Quellen wurden als öffentliche YouTube-Einträge gefunden; Einbettbarkeit ist vor Ort zu testen.
-  const samples = [
-    { id:'J7C2CuMd8hE', title:'Montana – Big Sky Country', category:'nature', start:0, end:90 },
-    { id:'0pFN9GUSjGg', title:'STIHL Timbersports – Underhand Chop', category:'logging', start:206, end:286 },
-    { id:'PSOsQTjw9Jo', title:'Glacier National Park 4K', category:'nature', start:20, end:105 },
-    { id:'OAyPVVEwdmo', title:'Kenworth 850 – Extreme Logging Trucks', category:'trucks', start:0, end:90 },
-    { id:'bOGGoY4KLZo', title:'NFL – Top 100 Plays 2025', category:'football', start:30, end:110 },
-    { id:'mV3CwxshqA8', title:'PBR – Bull Riding Highlights', category:'western', start:0, end:90 }
-  ];
+  // 10 Stunden / 75 Abschnitte – kuratierter ZEITFENSTER-ENTWURF; nicht jedes Fenster szenisch geprüft.
+  const defaultClips = [{"id":"J7C2CuMd8hE","title":"Montana – Big Sky Country","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights I","category":"logging","start":0,"end":360},{"id":"Gf5rSeTKpj4","title":"Canada 4K – Soaring over Canada","category":"nature","start":0,"end":780},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest I","category":"trucks","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (I)","category":"football","start":30,"end":390},{"id":"mV3CwxshqA8","title":"PBR – Top Rides 2025","category":"western","start":0,"end":360},{"id":"J2NGbj0i-7U","title":"Alaska – Aleutian Islands","category":"nature","start":500,"end":1340},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks I","category":"trucks","start":0,"end":360},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (I)","category":"football","start":30,"end":390},{"id":"4Z9mUjtFJYY","title":"USA 4K – Montana, Wyoming & Utah","category":"nature","start":1029,"end":1809},{"id":"Wrcaa1TZcsc","title":"PBR Teams – Top Rides 2025","category":"western","start":0,"end":360},{"id":"5fDCg8fPJEA","title":"Kenworth, Peterbilt & Western Star","category":"trucks","start":0,"end":360},{"id":"qSNFgOrqW-4","title":"STIHL Teams WM 2024 – Holzfäller","category":"logging","start":0,"end":360},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (I)","category":"football","start":30,"end":390},{"id":"TEoLTOQTxPw","title":"Alaska 8K – Brown Bears & Wildnis","category":"nature","start":549,"end":1389},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights II","category":"logging","start":360,"end":720},{"id":"PSOsQTjw9Jo","title":"Glacier National Park – Bergseen","category":"nature","start":120,"end":900},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest II","category":"trucks","start":360,"end":720},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (I)","category":"football","start":30,"end":390},{"id":"CZt3LkB3BHo","title":"PBR – Top 30 Bucking Bulls","category":"western","start":0,"end":360},{"id":"TpXP8xssr08","title":"Yellowstone Sommer – Naturaufnahmen","category":"nature","start":720,"end":1560},{"id":"k6gFpXnBxjI","title":"STIHL Individual WM 2025 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks II","category":"trucks","start":360,"end":720},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (I)","category":"football","start":30,"end":390},{"id":"O7UbV04A3FU","title":"Grand Teton – Rocky Mountains","category":"nature","start":300,"end":1080},{"id":"IW8tIuDWLRo","title":"PBR – Top Moments October 2025","category":"western","start":0,"end":360},{"id":"sMrmAW91mYY","title":"Tri-Drive Logging Trucks – British Columbia","category":"trucks","start":0,"end":360},{"id":"i3Ecow90ELA","title":"Fastest Woodchopping – Spitzensport","category":"logging","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (II)","category":"football","start":780,"end":1140},{"id":"3WgU-y50028","title":"Washington 4K – Pacific Northwest","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights III","category":"logging","start":720,"end":1080},{"id":"3LfgYj0qWXs","title":"Montana – Panorama 4K","category":"nature","start":300,"end":1080},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest III","category":"trucks","start":720,"end":1080},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (II)","category":"football","start":780,"end":1140},{"id":"hHJMKT_RXtI","title":"PBR – Most Unforgettable Rides","category":"western","start":0,"end":360},{"id":"JghhtQmdv88","title":"USA – Mountains & National Parks","category":"nature","start":43,"end":883},{"id":"DYxdTZFboeU","title":"STIHL European Trophy 2025","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks III","category":"trucks","start":720,"end":1080},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (II)","category":"football","start":780,"end":1140},{"id":"FNbwJf_hoiM","title":"Yellowstone – Yellowstone 4K Nature","category":"nature","start":0,"end":780},{"id":"dMlfxLe5qUQ","title":"Montana – Real Cattle Drive","category":"western","start":180,"end":540},{"id":"eAnh07RgJq8","title":"Logging Trucks #50 – Heavy Haul","category":"trucks","start":0,"end":360},{"id":"89LEDK5gpis","title":"STIHL World Trophy 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (II)","category":"football","start":780,"end":1140},{"id":"QMCa79JZQBg","title":"Montana – Glacier National Park","category":"nature","start":120,"end":960},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights IV","category":"logging","start":1080,"end":1440},{"id":"8gbIf3sOifs","title":"Utah – Arches, Zion, Felsen","category":"nature","start":240,"end":1020},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks IV","category":"trucks","start":1080,"end":1440},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (II)","category":"football","start":780,"end":1140},{"id":"pNBsr6b_Bwg","title":"Montana – Dryhead Ranch","category":"western","start":180,"end":540},{"id":"n_PqI9Ten_U","title":"Montana – Green Valleys & Big Sky","category":"nature","start":0,"end":840},{"id":"xdkLrdO7sPs","title":"STIHL World Trophy 2024 – Recap","category":"logging","start":0,"end":360},{"id":"wxziQ41r0N0","title":"Kenworth T800 & W900 Logging Trucks","category":"trucks","start":0,"end":360},{"id":"Kd5FfcQ2nAk","title":"NFL – Top 100 Catches 2025","category":"football","start":30,"end":390},{"id":"E4BeiKa1TAA","title":"Rocky Mountain National Park","category":"nature","start":0,"end":780},{"id":"VaaPEefUc5I","title":"Montana Cowboys – Cattle Drive","category":"western","start":120,"end":480},{"id":"ouBY0hOIk28","title":"Kenworth 850 – Coastal Logging","category":"trucks","start":0,"end":360},{"id":"UsSMNX_5kp0","title":"STIHL Individual WM – Episode 2","category":"logging","start":0,"end":360},{"id":"WMRt9N-W0eo","title":"NFL – Top 100 Runs (All Time)","category":"football","start":30,"end":390},{"id":"2L8VX4KLpDc","title":"Wyoming – Wildnis & Grand Teton","category":"nature","start":0,"end":840},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Part II","category":"logging","start":360,"end":720},{"id":"EXw5W6e55Sk","title":"Canadian Rockies – Lake Louise","category":"nature","start":240,"end":1020},{"id":"Igq7cFswGcs","title":"Ford Raptor R – Extreme Offroad","category":"trucks","start":0,"end":360},{"id":"579J5uqQ8N0","title":"NFL – Top 100 Catches (All Time)","category":"football","start":30,"end":390},{"id":"AMzvqGeDdvk","title":"Montana Cattle Drive – The Real West","category":"western","start":180,"end":540},{"id":"T_oL1cedJis","title":"Canadian Rockies – Moraine Lake","category":"nature","start":180,"end":1020},{"id":"nrwBdIK1RHA","title":"STIHL Individual WM – Episode 3","category":"logging","start":0,"end":360},{"id":"btO_lHZhXoM","title":"Jeep Rubicon – Extreme Offroad Trail","category":"trucks","start":360,"end":720},{"id":"7AfEjKekOa0","title":"NFL – Top 100 Catches 2024","category":"football","start":30,"end":390},{"id":"G3SXQhyECLA","title":"Montana – Rocky-Mountain-Winter","category":"nature","start":240,"end":1020},{"id":"8Ror9GqvJR4","title":"Cowboys & Ranching – Historical Film","category":"western","start":120,"end":480},{"id":"PsvhKQqV3ug","title":"Jeep Rubicon – Moab Utah","category":"trucks","start":0,"end":360},{"id":"Q4GbB7YkUGQ","title":"Tigercat – Logging in Pacific Northwest","category":"logging","start":0,"end":360},{"id":"uioAcUziNjU","title":"NFL – Top 100 Moves 2025","category":"football","start":30,"end":390}];
+  const oldSamples = [
+{id:"J7C2CuMd8hE"},{id:"0pFN9GUSjGg"},{id:"PSOsQTjw9Jo"},{id:"OAyPVVEwdmo"},{id:"bOGGoY4KLZo"},{id:"mV3CwxshqA8"}];
   const byId = id => document.getElementById(id);
   function loadJSON(key, fallback) { try { const s=localStorage.getItem(key); return s ? JSON.parse(s) : fallback; } catch(e) { return fallback; } }
   function saneClips(data) {
@@ -181,8 +224,12 @@
     }
     return res;
   }
-  let clips = saneClips(loadJSON(KEY,null)) ?? samples.map(x=>({...x}));
-  let settings = loadJSON(SETTINGS_KEY,{ loop:true, mode:'classic' });
+  // Bestehende eigene Sammlung aus V1 erhalten, die 6 Original-Testclips automatisch auf 10h hochstufen.
+  const v2Saved = saneClips(loadJSON(KEY,null));
+  const v1Saved = saneClips(loadJSON(OLD_KEY,null));
+  const v1OnlySamples = v1Saved && v1Saved.length===6 && oldSamples.every((x,i)=>x.id===v1Saved[i].id);
+  let clips = v2Saved ?? ((v1Saved && !v1OnlySamples) ? v1Saved : defaultClips.map(x=>({...x})));
+  let settings = loadJSON(SETTINGS_KEY,loadJSON(OLD_SETTINGS_KEY,{ loop:true, mode:'classic' }));
   if (!settings || typeof settings !== 'object') settings = {loop:true,mode:'classic'};
   let mode = settings.mode === 'mix' ? 'mix' : 'classic', loop = settings.loop !== false;
   let order=[], pos=0, player=null, apiReady=false, currentlyPlaying=false, started=false, editIndex=-1, currentPlayItem=-1, timer=null, pendingStart=false, isCinema=false, switching=false;
@@ -298,7 +345,7 @@
   function showCinema(on){isCinema=on;byId('video-shell').classList.toggle('theater',on);byId('theater-actions').classList.toggle('hidden',!on);document.body.style.overflow=on?'hidden':'';if(on)status('Kinomodus aktiv. Beim iPad für die Beamerprojektion möglichst im Querformat verwenden.');}
   function edit(i){ const c=clips[i]; if(!c)return;editIndex=i;byId('clip-url').value='https://www.youtube.com/watch?v='+c.id;byId('clip-title').value=c.title;byId('clip-start').value=fmt(c.start);byId('clip-end').value=fmt(c.end);byId('clip-category').value=c.category;byId('edit-heading').textContent='✎ Clip bearbeiten';byId('save-clip').textContent='ÄNDERUNGEN SPEICHERN';byId('cancel-edit').classList.remove('hidden');byId('clip-form').scrollIntoView({behavior:'smooth',block:'center'}); }
   function clearForm(){editIndex=-1;byId('clip-form').reset();byId('clip-start').value='00:00';byId('clip-end').value='05:00';byId('edit-heading').textContent='+ YouTube-Ausschnitt hinzufügen';byId('save-clip').textContent='+ CLIP SPEICHERN';byId('cancel-edit').classList.add('hidden');}
-  function restartAfterChange(){save();refreshOrder();if(started){started=false;currentlyPlaying=false;currentPlayItem=-1;if(player && player.stopVideo) try{player.stopVideo();}catch(e){}setCover(true);setButtons();status('Bibliothek gespeichert. Drücke START, um die aktualisierte Playlist zu starten.');}render();}
+  function restartAfterChange(){save();refreshOrder();if(started){started=false;currentlyPlaying=false;currentPlayItem=-1;if(player && player.stopVideo) try{player.stopVideo();}catch(e){}setCover(true);setButtons();status('Bibliothek gespeichert. Drücke START, um die aktualisierte Playlist zu starten.');}render();drawPlaylist();}
   byId('clip-form').addEventListener('submit',e=>{e.preventDefault();let id=parseId(byId('clip-url').value),start=toSeconds(byId('clip-start').value),end=toSeconds(byId('clip-end').value);if(!id){alert('Bitte einen gültigen YouTube-Link eingeben.');return;}if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<=start||end>43200){alert('Start und Ende bitte als mm:ss angeben. Das Ende muss nach dem Start liegen.');return;}let c={id,title:byId('clip-title').value.trim().slice(0,100),category:byId('clip-category').value,start,end};if(!c.title){alert('Bitte einen Titel eingeben.');return;}if(editIndex>=0)clips[editIndex]=c;else clips.push(c);clearForm();restartAfterChange();status('Clip erfolgreich gespeichert.');});
   byId('cancel-edit').addEventListener('click',clearForm);
   byId('clip-list').addEventListener('click',e=>{
@@ -316,10 +363,10 @@
   byId('btn-mode').addEventListener('click',()=>{mode=mode==='classic'?'mix':'classic';save();refreshOrder();render();status(mode==='mix'?'Smart Mix aktiviert. Beim nächsten Start werden Clips nach Kategorien gewichtet gemischt.':'Klassische Reihenfolge aktiviert.');});
   byId('btn-cinema').addEventListener('click',()=>showCinema(!isCinema));byId('theater-close').addEventListener('click',()=>showCinema(false));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isCinema)showCinema(false);});
-  byId('export-btn').addEventListener('click',()=>{const content=JSON.stringify({app:'Timberjacks-TV',version:1,exportedAt:new Date().toISOString(),clips},null,2);const blob=new Blob([content],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='timberjacks-tv-backup.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Backup als JSON-Datei erstellt. Im Dateien-Ordner speichern.');});
+  byId('export-btn').addEventListener('click',()=>{const content=JSON.stringify({app:'Wilderness Loop',version:2,exportedAt:new Date().toISOString(),clips},null,2);const blob=new Blob([content],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wilderness-loop-backup.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Backup als JSON-Datei erstellt. Im Dateien-Ordner speichern.');});
   byId('import-btn').addEventListener('click',()=>byId('import-file').click());
   byId('import-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>1048576)throw Error('Datei zu groß (max. 1 MB).');const data=JSON.parse(await file.text());const list=saneClips(Array.isArray(data)?data:data.clips);if(!list)throw Error('Ungültige Backup-Datei.');if(confirm('Die aktuelle Bibliothek mit '+list.length+' importierten Clips ersetzen?')){clips=list;clearForm();restartAfterChange();status('Backup erfolgreich importiert.');}}catch(err){status('Import fehlgeschlagen: '+err.message,true);}e.target.value='';});
-  byId('reset-btn').addEventListener('click',()=>{if(confirm('Alle eigenen Clips durch die sechs Testvideos ersetzen? Vorher bei Bedarf ein Backup speichern.')){clips=samples.map(x=>({...x}));clearForm();restartAfterChange();status('Sechs Testvideos geladen.');}});
+  byId('reset-btn').addEventListener('click',()=>{if(confirm('Alle eigenen Clips durch die 75 Clips der 10-Stunden-Playlist ersetzen? Vorher bei Bedarf ein Backup speichern.')){clips=defaultClips.map(x=>({...x}));clearForm();restartAfterChange();status('10-Stunden-Playlist geladen.');}});
   timer=setInterval(()=>{
     if(!player || !started || !currentlyPlaying || !current())return;
     try {
@@ -328,7 +375,34 @@
       if(t>=c.end-.12 && !switching)nextClip();
     }catch(e){}
   },350);
-  refreshOrder();render();setButtons();updateProgress();
+
+  function drawPlaylist(){
+    const playlistTotal=clips.reduce((sum,c)=>sum+c.end-c.start,0);
+    const totals=Object.keys(categories).map(k=>({k,seconds:clips.filter(x=>x.category===k).reduce((sum,c)=>sum+c.end-c.start,0)}));
+    byId('playlist-stats').innerHTML=`<span class="playlist-stat"><b>${clips.length}</b> Ausschnitte</span><span class="playlist-stat"><b>${fmt(playlistTotal)}</b> Spielzeit</span>`+totals.map(x=>`<span class="playlist-stat">${categories[x.k]} <b>${Math.round(x.seconds/Math.max(playlistTotal,1)*100)}%</b></span>`).join('');
+    const chunks=[];
+    for(let i=0;i<clips.length;i+=15){chunks.push(clips.slice(i,i+15).map((c,j)=>({...c,_idx:i+j})));}
+    let accum=0;
+    byId('playlist-blocks').innerHTML=chunks.map((chunk,block)=>{
+      const subtotal=chunk.reduce((a,c)=>a+c.end-c.start,0);
+      const start=accum;accum+=subtotal;
+      return `<details class="playlist-block" ${block===0?'open':''}><summary><span>🌲 KAPITEL ${block+1} &nbsp; · &nbsp; ${fmt(start)}–${fmt(accum)}</span><span>🕘 ${fmt(subtotal)} &nbsp; ▾</span></summary><div class="playlist-scroll"><table class="playlist-table"><thead><tr><th>Nr.</th><th>Genre</th><th>Video / Thema</th><th>Quelle</th><th>Von</th><th>Bis</th><th>Dauer</th><th>▶</th><th>Bearb.</th></tr></thead><tbody>`+chunk.map(c=>`<tr><td>${c._idx+1}</td><td>${esc(categories[c.category])}</td><td class="clip-name">${esc(c.title)}</td><td><a class="yt-link" href="https://www.youtube.com/watch?v=${encodeURIComponent(c.id)}&t=${c.start}s" target="_blank" rel="noopener noreferrer">YouTube ↗</a></td><td>${fmt(c.start)}</td><td>${fmt(c.end)}</td><td>${fmt(c.end-c.start)}</td><td><button type="button" class="pick-btn" data-play-idx="${c._idx}" title="Diesen Clip starten">▶</button></td><td><button type="button" class="pick-btn" data-edit-idx="${c._idx}" title="Zeitfenster ändern">✎</button></td></tr>`).join('')+`</tbody></table></div></details>`;
+    }).join('');
+  }
+  byId('playlist-blocks').addEventListener('click', e=>{
+    const editButton=e.target.closest('[data-edit-idx]');if(editButton){ edit(Number(editButton.dataset.editIdx));return; }
+    const b=e.target.closest('[data-play-idx]');if(!b)return;
+    mode='classic';refreshOrder();pos=Number(b.dataset.playIdx);started=false;currentlyPlaying=false;pendingStart=true;
+    save();prepareApi();if(player&&player.loadVideoById)playCurrent();
+    document.getElementById('player').scrollIntoView({behavior:'smooth'});
+  });
+  byId('btn-playlist-start').addEventListener('click',()=>{
+    mode='classic';refreshOrder();pos=0;started=false;currentlyPlaying=false;pendingStart=true;save();
+    prepareApi();if(player&&player.loadVideoById)playCurrent();
+    document.getElementById('player').scrollIntoView({behavior:'smooth'});
+  });
+
+  refreshOrder();render();setButtons();updateProgress();drawPlaylist();
 })();
 </script>
 </body>
