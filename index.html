@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101512">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Ein persönlicher American Experience Videoplayer mit YouTube-Clips, Zeitmarken und Endlosschleife.">
+  <title>Timberjacks TV — American Experience</title>
+  <style>
+    :root { color-scheme: dark; --bg:#101512; --panel:#19221d; --panel2:#202b23; --line:#334338; --txt:#eff1e9; --muted:#a9b7a9; --amber:#e8b56b; --amber2:#bd8044; --green:#85a88f; --danger:#e79e91; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--txt); font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; font-size:15px; line-height:1.45; }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; -webkit-tap-highlight-color: transparent; }
+    button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid var(--amber); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.45; }
+    a { color:var(--amber); }
+    .top { border-bottom:1px solid var(--line); background:radial-gradient(ellipse at 75% -30%,#334234 0%,transparent 62%),#17211a; padding:22px max(17px,env(safe-area-inset-left)); }
+    .top-inner,.container { max-width:1420px; margin:auto; }
+    .top-inner { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
+    .eyebrow { font-size:10px; letter-spacing:.24em; font-weight:800; color:var(--amber); text-transform:uppercase; }
+    h1 { font-size:clamp(24px,3.3vw,38px); line-height:1; text-transform:uppercase; letter-spacing:.065em; margin:5px 0 7px; font-weight:900; }
+    .subtitle { color:var(--muted); font-size:12px; letter-spacing:.09em; text-transform:uppercase; }
+    .badge { border:1px solid #6d5940; border-radius:999px; color:var(--amber); background:#31291e; padding:8px 12px; font-size:11px; letter-spacing:.07em; font-weight:800; white-space:nowrap; }
+    .container { padding:20px max(14px,env(safe-area-inset-left)) 80px; }
+    .layout { display:grid; grid-template-columns:minmax(0, 1.65fr) minmax(315px,.8fr); gap:18px; align-items:start; }
+    .box { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 10px 35px rgba(0,0,0,.13); }
+    .box-pad { padding:17px; }
+    .section-head { display:flex; gap:10px; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .section-title { margin:0; color:var(--txt); text-transform:uppercase; font-size:12px; letter-spacing:.13em; font-weight:850; }
+    .dim { color:var(--muted); font-size:12px; }
+    .video-shell { position:relative; background:#050706; aspect-ratio:16/9; width:100%; min-height:220px; overflow:hidden; }
+    #yt-player,.video-shell iframe { position:absolute; width:100%; height:100%; top:0; left:0; border:0; }
+    .cover { z-index:3; position:absolute; inset:0; display:grid; place-content:center; text-align:center; padding:22px; background:linear-gradient(135deg,rgba(7,14,10,.94),rgba(18,36,25,.92)), url('https://i.ytimg.com/vi/J7C2CuMd8hE/hqdefault.jpg') center/cover; }
+    .cover .symbol { font-size:38px; }
+    .cover h2 { margin:8px 0 4px; font-weight:850; text-transform:uppercase; letter-spacing:.08em; font-size:clamp(20px,3vw,35px); }
+    .cover p { max-width:340px; margin:0 auto 16px; color:#c6d0c3; font-size:13px; }
+    .cover button { justify-self:center; }
+    .hidden { display:none !important; }
+    .btn { border:1px solid #59705c; background:var(--panel2); color:var(--txt); border-radius:9px; min-height:43px; padding:10px 13px; font-weight:750; font-size:13px; transition:filter .2s; }
+    .btn:active { filter:brightness(1.25); }
+    .btn-primary { background:linear-gradient(180deg,#e7bc7e,#bd864b); border-color:#e6b371; color:#201a10; font-weight:900; }
+    .btn-small { min-height:37px; padding:8px 10px; font-size:12px; }
+    .btn-quiet { border-color:var(--line); background:#202a22; }
+    .btn-danger { color:var(--danger); border-color:#604238; }
+    .btn.active { border-color:var(--amber); color:var(--amber); background:#332a20; }
+    .playbar { display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin:15px 0 10px; }
+    .now { display:flex; align-items:baseline; flex-wrap:wrap; gap:9px; margin-bottom:10px; }
+    .now strong { font-size:17px; }
+    .chip { color:#161b15; border-radius:5px; background:var(--green); font-size:10px; font-weight:900; padding:3px 6px; text-transform:uppercase; }
+    .meter { height:7px; border-radius:15px; overflow:hidden; background:#344036; }
+    .meter-fill { height:100%; width:0%; background:linear-gradient(90deg,var(--amber2),var(--amber)); transition:width .25s linear; }
+    .under-meter { margin-top:7px; display:flex; justify-content:space-between; color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
+    .message { margin-top:12px; border-left:3px solid var(--amber2); background:#2b2b21; border-radius:0 7px 7px 0; padding:9px 12px; color:#eddfc6; font-size:12px; }
+    .message.error { border-color:var(--danger); background:#372321; }
+    .statbar { display:flex; flex-wrap:wrap; gap:12px 22px; margin-top:13px; color:var(--muted); font-size:12px; }
+    .statbar strong { color:var(--txt); }
+    .side-head { background:#202b22; padding:15px 15px 12px; border-bottom:1px solid var(--line); }
+    .side-tools { display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; }
+    .list { max-height:540px; overflow-y:auto; overscroll-behavior:contain; }
+    .list-row { display:grid; grid-template-columns:30px minmax(0,1fr) auto; gap:8px; align-items:center; padding:10px 11px; border-bottom:1px solid #2d392f; }
+    .list-row.playing { background:#30402f; border-left:3px solid var(--amber); padding-left:8px; }
+    .ordinal { font-size:12px; color:#809084; text-align:center; font-variant-numeric:tabular-nums; }
+    .clip-title { color:var(--txt); font-size:13px; font-weight:800; overflow-wrap:anywhere; }
+    .clip-meta { font-size:11px; color:var(--muted); margin-top:3px; }
+    .row-actions { display:flex; align-items:center; gap:3px; }
+    .iconbtn { min-width:33px; min-height:36px; background:transparent; color:#d5d9ce; border:1px solid transparent; border-radius:7px; }
+    .iconbtn:active { background:#364537; }
+    .row-actions .iconbtn { font-size:15px; }
+    .empty { padding:25px 15px; color:var(--muted); text-align:center; }
+    .edit-panel { margin-top:18px; }
+    .formgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .span2 { grid-column:span 2; }
+    label { display:block; font-size:12px; color:var(--muted); font-weight:700; margin-bottom:5px; }
+    input,select { display:block; width:100%; border:1px solid #445347; border-radius:8px; background:#101912; color:var(--txt); padding:11px; min-height:43px; font-size:14px; }
+    input::placeholder { color:#758676; }
+    .hint { color:var(--muted); font-size:11px; margin:7px 0 0; }
+    .form-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; }
+    .notice { border:1px solid #475442; border-radius:10px; background:#1a251c; padding:12px 15px; color:#c1cdbd; font-size:12px; margin-top:17px; }
+    .notice strong { color:var(--amber); }
+    footer { margin:25px auto 0; text-align:center; color:#879b89; font-size:11px; max-width:730px; }
+    .theater { position:fixed !important; inset:0 !important; z-index:1000 !important; width:100vw !important; height:100dvh !important; aspect-ratio:auto !important; border-radius:0 !important; }
+    .theater #yt-player,.theater iframe { height:100% !important; width:100% !important; }
+    .theater-actions { position:absolute; top:max(13px,env(safe-area-inset-top)); right:18px; z-index:4; display:flex; gap:8px; }
+    .theater-actions button { background:rgba(15,23,17,.88); border-color:#62705f; }
+    .cover.theater-cover { z-index:3; }
+    .lightweight { color:var(--muted); font-size:12px; }
+    @media(max-width:850px) { .layout { grid-template-columns:1fr; } .list { max-height:400px; } .container { padding-top:13px; } }
+    @media(max-width:460px) { .top { padding:14px; } .box-pad { padding:13px; } .playbar .btn { flex:1 1 43%; } .video-shell { min-height:190px; } .row-actions { flex-wrap:wrap; max-width:80px; justify-content:end; } .formgrid { gap:9px; } }
+    @media(prefers-reduced-motion:reduce) { * { transition:none !important; } }
+  </style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <div><div class="eyebrow">Independent home cinema · The American Experience</div><h1>🪵 Timberjacks <span style="color:var(--amber)">TV</span></h1><div class="subtitle">Mountains · Logging · Trucks · Football · Rodeo</div></div>
+  <div class="badge">PRIVATE PLAYLIST PROJECT · V1.0</div>
+</div></header>
+<main class="container">
+  <div class="layout">
+    <section>
+      <div class="box">
+        <div class="video-shell" id="video-shell">
+          <div id="yt-player"></div>
+          <div id="cover" class="cover"><div class="symbol">🏔️</div><h2>American Experience</h2><p>Dein persönlicher Video-Mix. Klicke auf START, um die YouTube-Ausschnitte stumm abzuspielen.</p><button type="button" class="btn btn-primary" id="cover-start">▶ VIDEO-SCHLEIFE STARTEN</button></div>
+          <div class="theater-actions hidden" id="theater-actions"><button class="btn btn-small" id="theater-next" type="button">⏭ Weiter</button><button class="btn btn-small" id="theater-close" type="button">✕ Schließen</button></div>
+        </div>
+        <div class="box-pad">
+          <div class="now"><span class="chip" id="now-category">BEREIT</span><strong id="now-title">Deine American Experience wartet</strong></div>
+          <div class="meter"><div class="meter-fill" id="meter"></div></div>
+          <div class="under-meter"><span id="elapsed">00:00</span><span id="total">00:00</span></div>
+          <div class="playbar">
+            <button type="button" class="btn btn-primary" id="btn-play">▶ START</button>
+            <button type="button" class="btn" id="btn-next">⏭ NÄCHSTER CLIP</button>
+            <button type="button" class="btn" id="btn-mode">🔀 SMART MIX: AUS</button>
+            <button type="button" class="btn active" id="btn-loop">🔁 LOOP: AN</button>
+            <button type="button" class="btn" id="btn-cinema">⛶ KINOMODUS</button>
+          </div>
+          <div id="status" class="message" role="status">Tipp: Auf dem iPad zuerst auf START tippen. Die Videos bleiben stumm, damit die automatische Wiedergabe möglichst zuverlässig funktioniert.</div>
+          <div class="statbar"><div>🎞️ Clips: <strong id="count">0</strong></div><div>⏱️ Grundlaufzeit: <strong id="duration">0 Min.</strong></div><div>📺 Ausgabe: <strong>iPad / Beamer</strong></div></div>
+        </div>
+      </div>
+      <div class="notice"><strong>Wichtig für iPad und YouTube:</strong> Automatisches Weiterschalten funktioniert nur bei einbettbaren Videos und kann durch Werbung oder iPadOS eingeschränkt werden. Falls ein Video nicht startet, erneut auf START drücken oder NÄCHSTER CLIP wählen. Dieser Player lädt keine Videos herunter.</div>
+      <div class="box edit-panel">
+        <div class="box-pad"><div class="section-head"><h2 class="section-title" id="edit-heading">+ YouTube-Ausschnitt hinzufügen</h2><span class="dim">Bibliothek bearbeiten</span></div>
+          <form id="clip-form">
+            <div class="formgrid">
+              <div class="span2"><label for="clip-url">YouTube-Link</label><input id="clip-url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" autocapitalize="off" required></div>
+              <div class="span2"><label for="clip-title">Titel</label><input id="clip-title" maxlength="100" placeholder="z. B. Montana im Sonnenuntergang" required></div>
+              <div><label for="clip-start">Startzeit (mm:ss)</label><input id="clip-start" placeholder="02:00" value="00:00" inputmode="text" required></div>
+              <div><label for="clip-end">Endzeit (mm:ss)</label><input id="clip-end" placeholder="06:00" value="05:00" inputmode="text" required></div>
+              <div class="span2"><label for="clip-category">Kategorie</label><select id="clip-category"><option value="nature">🏔️ Natur & Wildlife</option><option value="logging">🪓 Holzfäller & Forst</option><option value="trucks">🚛 Trucks & Offroad</option><option value="football">🏈 Football</option><option value="western">🤠 Western & Rodeo</option></select></div>
+            </div>
+            <p class="hint">Beispiel: Start 02:00, Ende 06:00 bedeutet 4 Minuten Wiedergabe. Die Zeiten sollten innerhalb der tatsächlichen Videolänge liegen.</p>
+            <div class="form-actions"><button class="btn btn-primary" type="submit" id="save-clip">+ CLIP SPEICHERN</button><button class="btn btn-quiet hidden" id="cancel-edit" type="button">Abbrechen</button></div>
+          </form>
+        </div>
+      </div>
+    </section>
+    <aside class="box">
+      <div class="side-head"><div class="section-head" style="margin-bottom:2px"><h2 class="section-title">🎞️ Meine Videobibliothek</h2><span class="dim" id="count-side">0 Clips</span></div>
+        <div class="lightweight">Antippen, bearbeiten, verschieben – alles direkt hier.</div>
+        <div class="side-tools"><button type="button" class="btn btn-small" id="export-btn">⬇ Backup</button><button type="button" class="btn btn-small" id="import-btn">⬆ Importieren</button><button type="button" class="btn btn-small" id="reset-btn">↺ Beispiele</button><input type="file" accept=".json,application/json" id="import-file" class="hidden"></div>
+      </div>
+      <div class="list" id="clip-list"></div>
+      <div class="box-pad lightweight" style="border-top:1px solid var(--line)">🔀 <strong>Smart Mix:</strong> Natur 45 %, Holz 15 %, Trucks 15 %, Football 15 %, Western 10 %. Es werden verfügbare Clips ausgewählt und möglichst abwechslungsreich gemischt.<br><br>💾 Deine Änderungen werden automatisch <strong>in diesem Browser auf diesem Gerät</strong> gespeichert. Mit „Backup“ kannst du sie als Datei sichern oder auf ein anderes Gerät übertragen.</div>
+    </aside>
+  </div>
+  <footer>Inoffizielles, privates Fanprojekt – keine Verbindung zum Restaurantbetreiber. Die Videos werden über den offiziellen YouTube-Einbettungsplayer wiedergegeben. Internet erforderlich.</footer>
+</main>
+<script>
+(() => {
+  'use strict';
+  const KEY = 'timberjacks-tv-v1-clips';
+  const SETTINGS_KEY = 'timberjacks-tv-v1-settings';
+  const categories = { nature: '🏔️ Natur', logging: '🪓 Holz', trucks: '🚛 Trucks', football: '🏈 Football', western: '🤠 Western' };
+  const weights = { nature:.45, logging:.15, trucks:.15, football:.15, western:.10 };
+  // Kurze Test-Ausschnitte statt der späteren fünfstündigen Bibliothek.
+  // Quellen wurden als öffentliche YouTube-Einträge gefunden; Einbettbarkeit ist vor Ort zu testen.
+  const samples = [
+    { id:'J7C2CuMd8hE', title:'Montana – Big Sky Country', category:'nature', start:0, end:90 },
+    { id:'0pFN9GUSjGg', title:'STIHL Timbersports – Underhand Chop', category:'logging', start:206, end:286 },
+    { id:'PSOsQTjw9Jo', title:'Glacier National Park 4K', category:'nature', start:20, end:105 },
+    { id:'OAyPVVEwdmo', title:'Kenworth 850 – Extreme Logging Trucks', category:'trucks', start:0, end:90 },
+    { id:'bOGGoY4KLZo', title:'NFL – Top 100 Plays 2025', category:'football', start:30, end:110 },
+    { id:'mV3CwxshqA8', title:'PBR – Bull Riding Highlights', category:'western', start:0, end:90 }
+  ];
+  const byId = id => document.getElementById(id);
+  function loadJSON(key, fallback) { try { const s=localStorage.getItem(key); return s ? JSON.parse(s) : fallback; } catch(e) { return fallback; } }
+  function saneClips(data) {
+    if (!Array.isArray(data)) return null;
+    const res=[];
+    for (const x of data.slice(0,500)) {
+      if (!x || typeof x !== 'object') continue;
+      const id = parseId(String(x.id || x.url || ''));
+      const title = String(x.title || 'Unbenannter Clip').slice(0,100).trim();
+      const start = Number(x.start), end=Number(x.end);
+      if (!id || !Number.isFinite(start) || !Number.isFinite(end) || start < 0 || end <= start || end > 43200 || !categories[x.category]) continue;
+      res.push({id,title,category:x.category,start:Math.floor(start),end:Math.floor(end)});
+    }
+    return res;
+  }
+  let clips = saneClips(loadJSON(KEY,null)) ?? samples.map(x=>({...x}));
+  let settings = loadJSON(SETTINGS_KEY,{ loop:true, mode:'classic' });
+  if (!settings || typeof settings !== 'object') settings = {loop:true,mode:'classic'};
+  let mode = settings.mode === 'mix' ? 'mix' : 'classic', loop = settings.loop !== false;
+  let order=[], pos=0, player=null, apiReady=false, currentlyPlaying=false, started=false, editIndex=-1, currentPlayItem=-1, timer=null, pendingStart=false, isCinema=false, switching=false;
+  function save() { try { localStorage.setItem(KEY,JSON.stringify(clips)); localStorage.setItem(SETTINGS_KEY, JSON.stringify({mode,loop})); } catch(e){status('Browser-Speicher nicht verfügbar. Bitte ein Backup exportieren.',true);} }
+  function parseId(raw) {
+    const v=raw.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
+    try {
+      const url = new URL(v);
+      if (!/(^|\.)youtube\.com$|(^|\.)youtu\.be$|(^|\.)youtube-nocookie\.com$/.test(url.hostname.toLowerCase())) return null;
+      const h=url.hostname.toLowerCase();
+      let id;
+      if (h.endsWith('youtu.be')) id=url.pathname.split('/').filter(Boolean)[0];
+      else if (url.pathname === '/watch') id=url.searchParams.get('v');
+      else id=url.pathname.split('/').filter(Boolean).at(-1);
+      return /^[a-zA-Z0-9_-]{11}$/.test(id||'') ? id : null;
+    } catch(e) { return null; }
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+  function fmt(sec) { sec = Math.max(0,Math.floor(Number(sec)||0)); const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60; return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+  function toSeconds(v) { const t=v.trim(); if (!/^\d{1,4}(?::\d{1,2}){0,2}$/.test(t)) return NaN; const a=t.split(':').map(Number); if (a.length>1 && (a.at(-1)>=60 || (a.length===3 && a[1]>=60))) return NaN; return a.reduce((n,x)=>n*60+x,0); }
+  function status(t,err=false){ byId('status').textContent=t; byId('status').classList.toggle('error',!!err); }
+  function updateProgress(t=0, dur=0) { byId('elapsed').textContent=fmt(t);byId('total').textContent=fmt(dur);byId('meter').style.width= (dur ? Math.max(0,Math.min(100, t/dur*100)):0)+'%'; }
+  function makeClassic() { return clips.map((_,i)=>i); }
+  function makeMix() {
+    if (!clips.length) return [];
+    const avail=Object.keys(weights).filter(k=>clips.some(c=>c.category===k));
+    if(avail.length===1) return clips.map((_,i)=>i);
+    const totalWeight=avail.reduce((s,k)=>s+weights[k],0);
+    const times=Object.fromEntries(avail.map(k=>[k,0]));
+    const used=Array(clips.length).fill(-999); let result=[], total=0, lastCat=null;
+    for (let step=0;step<Math.max(40, clips.length);step++) {
+      let choices=avail.filter(k=> k!==lastCat);if(!choices.length) choices=avail;
+      choices.sort((a,b)=> ((times[a]/Math.max(total,1))-weights[a]/totalWeight)-((times[b]/Math.max(total,1))-weights[b]/totalWeight));
+      const cat=choices[0];
+      const options=clips.map((c,i)=>({c,i})).filter(x=>x.c.category===cat);
+      options.sort((a,b)=>used[a.i]-used[b.i]);
+      const best=options[0].i;
+      result.push(best); used[best]=step; times[cat]+=clips[best].end-clips[best].start;total+=clips[best].end-clips[best].start;lastCat=cat;
+    }
+    return result;
+  }
+  function refreshOrder(){ order=mode==='mix'?makeMix():makeClassic(); pos=0; }
+  function current(){ return clips[order[pos]]; }
+  function render() {
+    byId('count').textContent=clips.length;byId('count-side').textContent=clips.length+' Clips';
+    const dur=clips.reduce((s,c)=>s+c.end-c.start,0);byId('duration').textContent=fmt(dur);
+    byId('btn-mode').textContent=mode==='mix'?'🔀 SMART MIX: AN':'🔀 SMART MIX: AUS';byId('btn-mode').classList.toggle('active',mode==='mix');
+    byId('btn-loop').textContent=loop?'🔁 LOOP: AN':'🔁 LOOP: AUS';byId('btn-loop').classList.toggle('active',loop);
+    const list=byId('clip-list');
+    if(!clips.length){list.innerHTML='<div class="empty">Noch keine Clips vorhanden. Füge unten links deinen ersten YouTube-Link hinzu.</div>';return;}
+    list.innerHTML=clips.map((c,i)=>`<div class="list-row ${i===currentPlayItem&&started?'playing':''}" data-index="${i}"><span class="ordinal">${String(i+1).padStart(2,'0')}</span><div><div class="clip-title">${esc(c.title)}</div><div class="clip-meta">${esc(categories[c.category])} · ${fmt(c.start)}–${fmt(c.end)} · ${fmt(c.end-c.start)}</div></div><div class="row-actions"><button type="button" class="iconbtn" data-act="watch" data-i="${i}" title="Clip abspielen" aria-label="Clip abspielen">▶</button><button type="button" class="iconbtn" data-act="edit" data-i="${i}" title="Bearbeiten" aria-label="Bearbeiten">✎</button><button type="button" class="iconbtn" data-act="up" data-i="${i}" title="Nach oben" aria-label="Nach oben">↑</button><button type="button" class="iconbtn" data-act="down" data-i="${i}" title="Nach unten" aria-label="Nach unten">↓</button><button type="button" class="iconbtn" data-act="delete" data-i="${i}" title="Entfernen" aria-label="Entfernen">×</button></div></div>`).join('');
+  }
+  function setButtons(){byId('btn-play').textContent=currentlyPlaying?'⏸ PAUSE':(started?'▶ WEITER':'▶ START');}
+  function setCover(show){byId('cover').classList.toggle('hidden',!show);}
+  function prepareApi() {
+    if(window.YT && window.YT.Player) { createPlayer();return; }
+    if(document.getElementById('yt-api-script')) return;
+    const s=document.createElement('script');s.id='yt-api-script';s.src='https://www.youtube.com/iframe_api';s.async=true;s.onerror=()=>{pendingStart=false;status('Die YouTube-API konnte nicht geladen werden. Internetverbindung prüfen.',true);};document.head.appendChild(s);
+  }
+  window.onYouTubeIframeAPIReady = () => {apiReady=true;createPlayer();};
+  function createPlayer() {
+    if(player) return;
+    apiReady=true;
+    player = new YT.Player('yt-player', {
+      width:'100%',height:'100%',
+      playerVars:{playsinline:1,autoplay:0,controls:1,rel:0,disablekb:1,fs:0,iv_load_policy:3,origin:location.origin.startsWith('http')?location.origin:undefined},
+      events:{
+        onReady:()=> { try {player.mute();} catch(e){} if(pendingStart) playCurrent(); },
+        onStateChange: e => { if(e.data===YT.PlayerState.ENDED) advance(); else if(e.data===YT.PlayerState.PLAYING){currentlyPlaying=true;switching=false;setButtons();status('Wiedergabe läuft. Die Clips wechseln nach der eingestellten Endzeit.');} else if(e.data===YT.PlayerState.PAUSED && !switching){currentlyPlaying=false;setButtons();}},
+        onError: e => {switching=false;status('YouTube-Video nicht verfügbar oder Einbettung gesperrt (Fehler '+e.data+'). Weiter zum nächsten Clip.',true); setTimeout(()=>advance(),1600);},
+        onAutoplayBlocked:()=> {currentlyPlaying=false;setButtons();status('iPadOS hat die automatische Wiedergabe gestoppt. Bitte auf WEITER tippen.',true);setCover(true);}
+      }
+    });
+  }
+  function playCurrent() {
+    if (!clips.length) {status('Bitte zuerst einen Clip hinzufügen.',true);pendingStart=false;return;}
+    if(!order.length) refreshOrder();
+    const c=current();if(!c){status('Kein Clip gefunden.',true);return;}
+    currentPlayItem=order[pos];started=true;pendingStart=false;currentlyPlaying=true;switching=true;
+    byId('now-title').textContent=c.title;byId('now-category').textContent=categories[c.category];
+    updateProgress(0,c.end-c.start);setButtons();setCover(false);render();
+    if(!player || typeof player.loadVideoById!=='function'){pendingStart=true;prepareApi();status('YouTube-Player wird geladen …');return;}
+    try { player.mute(); player.loadVideoById({videoId:c.id,startSeconds:c.start,endSeconds:c.end}); status('Lade Clip '+(pos+1)+' …'); }
+    catch(e) {status('Video konnte nicht gestartet werden. Bitte START erneut drücken.',true);currentlyPlaying=false;setButtons();}
+  }
+  function start() {
+    if(!clips.length){status('Füge zuerst einen Clip hinzu.',true);return;}
+    if(!order.length) refreshOrder();
+    if(started && player && typeof player.playVideo==='function' && !currentlyPlaying){
+      try {player.mute();player.playVideo();currentlyPlaying=true;setButtons();setCover(false);return;} catch(e) {}
+    }
+    if(started && currentlyPlaying){ pause();return; }
+    pendingStart=true;prepareApi();
+    if(player && typeof player.loadVideoById==='function')playCurrent();
+    else status('Verbinde mit YouTube …');
+  }
+  function pause() {if(player && player.pauseVideo) player.pauseVideo();currentlyPlaying=false;setButtons();status('Pausiert. Drücke WEITER, um fortzufahren.');}
+  function advance() {
+    if(!clips.length)return;
+    if(!order.length)refreshOrder();
+    if(switching) { // Der END-Status eines alten Videos darf den neuen Clip nicht überspringen.
+      return;
+    }
+    pos++;
+    if(pos>=order.length){
+      if(!loop){currentlyPlaying=false;started=false;setCover(true);setButtons();status('Playlist beendet. LOOP kann oben eingeschaltet werden.');return;}
+      refreshOrder();
+    }
+    playCurrent();
+  }
+  function nextClip(){switching=false;advance();}
+  function showCinema(on){isCinema=on;byId('video-shell').classList.toggle('theater',on);byId('theater-actions').classList.toggle('hidden',!on);document.body.style.overflow=on?'hidden':'';if(on)status('Kinomodus aktiv. Beim iPad für die Beamerprojektion möglichst im Querformat verwenden.');}
+  function edit(i){ const c=clips[i]; if(!c)return;editIndex=i;byId('clip-url').value='https://www.youtube.com/watch?v='+c.id;byId('clip-title').value=c.title;byId('clip-start').value=fmt(c.start);byId('clip-end').value=fmt(c.end);byId('clip-category').value=c.category;byId('edit-heading').textContent='✎ Clip bearbeiten';byId('save-clip').textContent='ÄNDERUNGEN SPEICHERN';byId('cancel-edit').classList.remove('hidden');byId('clip-form').scrollIntoView({behavior:'smooth',block:'center'}); }
+  function clearForm(){editIndex=-1;byId('clip-form').reset();byId('clip-start').value='00:00';byId('clip-end').value='05:00';byId('edit-heading').textContent='+ YouTube-Ausschnitt hinzufügen';byId('save-clip').textContent='+ CLIP SPEICHERN';byId('cancel-edit').classList.add('hidden');}
+  function restartAfterChange(){save();refreshOrder();if(started){started=false;currentlyPlaying=false;currentPlayItem=-1;if(player && player.stopVideo) try{player.stopVideo();}catch(e){}setCover(true);setButtons();status('Bibliothek gespeichert. Drücke START, um die aktualisierte Playlist zu starten.');}render();}
+  byId('clip-form').addEventListener('submit',e=>{e.preventDefault();let id=parseId(byId('clip-url').value),start=toSeconds(byId('clip-start').value),end=toSeconds(byId('clip-end').value);if(!id){alert('Bitte einen gültigen YouTube-Link eingeben.');return;}if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<=start||end>43200){alert('Start und Ende bitte als mm:ss angeben. Das Ende muss nach dem Start liegen.');return;}let c={id,title:byId('clip-title').value.trim().slice(0,100),category:byId('clip-category').value,start,end};if(!c.title){alert('Bitte einen Titel eingeben.');return;}if(editIndex>=0)clips[editIndex]=c;else clips.push(c);clearForm();restartAfterChange();status('Clip erfolgreich gespeichert.');});
+  byId('cancel-edit').addEventListener('click',clearForm);
+  byId('clip-list').addEventListener('click',e=>{
+    const btn=e.target.closest('[data-act]');if(!btn)return;
+    const i=Number(btn.dataset.i),act=btn.dataset.act;if(!clips[i])return;
+    if(act==='edit')edit(i);
+    else if(act==='delete'){if(confirm('Diesen Clip aus der Bibliothek entfernen?')){clips.splice(i,1);if(editIndex===i)clearForm();restartAfterChange();}}
+    else if(act==='up'||act==='down'){const j=i+(act==='up'?-1:1);if(j<0||j>=clips.length)return;[clips[i],clips[j]]=[clips[j],clips[i]];restartAfterChange();}
+    else if(act==='watch'){if(mode==='classic'){order=makeClassic();pos=i;} else{refreshOrder();order.unshift(i);pos=0;}currentlyPlaying=false;started=false;pendingStart=true;prepareApi();if(player&&player.loadVideoById)playCurrent();else status('YouTube-Player wird geladen …');}
+  });
+  byId('btn-play').addEventListener('click',start);
+  byId('cover-start').addEventListener('click',()=>{if(started && player && typeof player.playVideo==='function' && !currentlyPlaying){setCover(false);try{player.playVideo();currentlyPlaying=true;setButtons();}catch(e){start();}}else start();});
+  byId('btn-next').addEventListener('click',nextClip);byId('theater-next').addEventListener('click',nextClip);
+  byId('btn-loop').addEventListener('click',()=>{loop=!loop;save();render();});
+  byId('btn-mode').addEventListener('click',()=>{mode=mode==='classic'?'mix':'classic';save();refreshOrder();render();status(mode==='mix'?'Smart Mix aktiviert. Beim nächsten Start werden Clips nach Kategorien gewichtet gemischt.':'Klassische Reihenfolge aktiviert.');});
+  byId('btn-cinema').addEventListener('click',()=>showCinema(!isCinema));byId('theater-close').addEventListener('click',()=>showCinema(false));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isCinema)showCinema(false);});
+  byId('export-btn').addEventListener('click',()=>{const content=JSON.stringify({app:'Timberjacks-TV',version:1,exportedAt:new Date().toISOString(),clips},null,2);const blob=new Blob([content],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='timberjacks-tv-backup.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Backup als JSON-Datei erstellt. Im Dateien-Ordner speichern.');});
+  byId('import-btn').addEventListener('click',()=>byId('import-file').click());
+  byId('import-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>1048576)throw Error('Datei zu groß (max. 1 MB).');const data=JSON.parse(await file.text());const list=saneClips(Array.isArray(data)?data:data.clips);if(!list)throw Error('Ungültige Backup-Datei.');if(confirm('Die aktuelle Bibliothek mit '+list.length+' importierten Clips ersetzen?')){clips=list;clearForm();restartAfterChange();status('Backup erfolgreich importiert.');}}catch(err){status('Import fehlgeschlagen: '+err.message,true);}e.target.value='';});
+  byId('reset-btn').addEventListener('click',()=>{if(confirm('Alle eigenen Clips durch die sechs Testvideos ersetzen? Vorher bei Bedarf ein Backup speichern.')){clips=samples.map(x=>({...x}));clearForm();restartAfterChange();status('Sechs Testvideos geladen.');}});
+  timer=setInterval(()=>{
+    if(!player || !started || !currentlyPlaying || !current())return;
+    try {
+      const c=current(), t=Number(player.getCurrentTime());if(!Number.isFinite(t))return;
+      updateProgress(Math.max(0,t-c.start),c.end-c.start);
+      if(t>=c.end-.12 && !switching)nextClip();
+    }catch(e){}
+  },350);
+  refreshOrder();render();setButtons();updateProgress();
+})();
+</script>
+</body>
+</html>
