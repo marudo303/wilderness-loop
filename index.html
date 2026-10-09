@@ -149,7 +149,7 @@
 <body>
 <header class="top"><div class="top-inner">
   <div><div class="eyebrow">Independent home cinema · The American Experience</div><h1>🌲 Wilderness <span style="color:var(--amber)">Loop</span></h1><div class="subtitle">Mountains · Logging · Trucks · Football · Rodeo</div></div>
-  <div class="badge">AMERICAN EXPERIENCE · V2.1.2 BEAMER-MODUS</div>
+  <div class="badge">AMERICAN EXPERIENCE · V2.2 FOOTBALL-FIX</div>
 </div></header>
 <main class="container">
   <nav class="main-nav" aria-label="Wilderness Loop Navigation">
@@ -159,8 +159,8 @@
     <div class="playlist-hero">
       <div><div class="eyebrow">DEINE SAMMLUNG · 5 KAPITEL</div>
        <h2 class="playlist-title">🎞️ THE 10-HOUR EXPERIENCE</h2>
-       <p>75 Clips · 10 Stunden geplanter Bildmix · 13 neue Quellen im Praxistest</p>
-       <div class="warning">🟠 <strong>Version 2.1 – Praxistest:</strong> 13 neue Videovorschläge (🧪), noch nicht vollständig gesichtet. Ist ein neuer Clip zu kurz oder lässt sich nicht einbetten, probiert der Player automatisch die frühere Quelle. YouTube-Werbung und iPad-Wiedergabesperren bleiben möglich. Deine gespeicherten Anpassungen bleiben erhalten.</div>
+       <p>75 Clips · 10 Stunden geplanter Bildmix · College Football statt gesperrter NFL-Quellen</p>
+       <div class="warning">🟠 <strong>V2.2 Football-Test:</strong> Die NFL-Videos waren auf deinem iPad wegen Einbettungssperre (Fehler 150) blockiert. 15 Football-Positionen sind jetzt mit fünf längeren College-Football-Quellen bestückt. Deren Einbettbarkeit ist noch <strong>nicht bestätigt</strong>. Mit „🏈 Quellen testen“ werden sie im Player geprüft. Bei Fehlern versucht der Player eine andere Football-Quelle; wenn alle gesperrt sind, ersetzt vorübergehend ein bereits bei dir getesteter Naturclip die Position. Deine eigenen Änderungen bleiben erhalten.</div>
       </div>
       <div class="playlist-actions"><button type="button" class="btn btn-primary" id="btn-playlist-start">▶ 10H-PLAYLIST STARTEN</button><a href="#player" class="btn btn-quiet">Zum Player ↓</a></div>
     </div>
@@ -213,7 +213,7 @@
     <aside class="box">
       <div class="side-head"><div class="section-head" style="margin-bottom:2px"><h2 class="section-title">🎞️ Clips & Reihenfolge</h2><span class="dim" id="count-side">0 Clips</span></div>
         <div class="lightweight">Antippen, bearbeiten, verschieben – alles direkt hier.</div>
-        <div class="side-tools"><button type="button" class="btn btn-small" id="export-btn">⬇ Backup</button><button type="button" class="btn btn-small" id="import-btn">⬆ Importieren</button><button type="button" class="btn btn-small" id="reset-btn">↺ V2.1 laden</button><button type="button" class="btn btn-small" id="report-btn">⬇ Testbericht</button><input type="file" accept=".json,application/json" id="import-file" class="hidden"></div>
+        <div class="side-tools"><button type="button" class="btn btn-small" id="export-btn">⬇ Backup</button><button type="button" class="btn btn-small" id="import-btn">⬆ Importieren</button><button type="button" class="btn btn-small" id="reset-btn">↺ V2.2 laden</button><button type="button" class="btn btn-small" id="football-test-btn">🏈 Quellen testen</button><button type="button" class="btn btn-small" id="report-btn">⬇ Testbericht</button><input type="file" accept=".json,application/json" id="import-file" class="hidden"></div>
       </div>
       <div class="list" id="clip-list"></div>
       <div class="box-pad lightweight" style="border-top:1px solid var(--line)">🔀 <strong>Smart Mix:</strong> Natur 45 %, Holz 15 %, Trucks 15 %, Football 15 %, Western 10 %. Es werden verfügbare Clips ausgewählt und möglichst abwechslungsreich gemischt.<br><br>💾 Deine Änderungen werden automatisch <strong>in diesem Browser auf diesem Gerät</strong> gespeichert. Mit „Backup“ kannst du sie als Datei sichern oder auf ein anderes Gerät übertragen. Über 👍 und 👎 bewertest du Clips; mit „Testbericht“ kannst du deine Bewertungen und technische Probleme als Datei exportieren.</div>
@@ -233,12 +233,17 @@
   const categories = { nature: '🏔️ Natur', logging: '🪓 Holz', trucks: '🚛 Trucks', football: '🏈 Football', western: '🤠 Western' };
   const weights = { nature:.45, logging:.15, trucks:.15, football:.15, western:.10 };
   // 10 Stunden / 75 Abschnitte – 13 neue Quellen mit TESTFENSTERN; Szenen nicht abschließend gesichtet.
-  const defaultClips = [{"id":"J7C2CuMd8hE","title":"Montana – Big Sky Country","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights I","category":"logging","start":0,"end":360},{"id":"Gf5rSeTKpj4","title":"Canada 4K – Soaring over Canada","category":"nature","start":189,"end":969},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest I","category":"trucks","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (I)","category":"football","start":30,"end":390},{"id":"mV3CwxshqA8","title":"PBR – Top Rides 2025","category":"western","start":0,"end":360},{"id":"J2NGbj0i-7U","title":"Alaska – Aleuten, Wildtiere & Luftaufnahmen","category":"nature","start":500,"end":1340},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks I","category":"trucks","start":0,"end":360},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (I)","category":"football","start":30,"end":390},{"id":"4Z9mUjtFJYY","title":"USA 4K – Montana, Wyoming, Utah & Southwest","category":"nature","start":1029,"end":1809},{"id":"Wrcaa1TZcsc","title":"PBR Teams – Top Rides 2025","category":"western","start":0,"end":360},{"id":"a2KQMLrLi_w","title":"Logging Trucks – Loaded Direct from the Mountains","category":"trucks","start":0,"end":360},{"id":"qSNFgOrqW-4","title":"STIHL Teams WM 2024 – Holzfäller","category":"logging","start":0,"end":360},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (I)","category":"football","start":30,"end":390},{"id":"TEoLTOQTxPw","title":"Alaska 8K – Brown Bears & Wildnis","category":"nature","start":549,"end":1389},{"id":"TND5yat9fh8","title":"STIHL TIMBERSPORTS – Team-WM 2022 Highlights","category":"logging","start":0,"end":360},{"id":"PSOsQTjw9Jo","title":"Glacier National Park – Bergseen","category":"nature","start":120,"end":900},{"id":"RiUYPLk3I-k","title":"Log Truck Driver – Vancouver Island","category":"trucks","start":0,"end":360},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (I)","category":"football","start":30,"end":390},{"id":"ZgM1r-IIrtI","title":"PBR – Memorable Moments September 2025","category":"western","start":0,"end":360},{"id":"TpXP8xssr08","title":"Yellowstone Sommer – Naturaufnahmen","category":"nature","start":720,"end":1560},{"id":"k6gFpXnBxjI","title":"STIHL Individual WM 2025 – Highlights","category":"logging","start":0,"end":360},{"id":"07dW_dsSbnI","title":"Extreme Logging Trucks 8 – Kenworth 850 Knox Bay","category":"trucks","start":360,"end":720},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (I)","category":"football","start":30,"end":390},{"id":"O7UbV04A3FU","title":"Grand Teton – Rocky Mountains","category":"nature","start":300,"end":1080},{"id":"IW8tIuDWLRo","title":"PBR – Top Moments October 2025","category":"western","start":0,"end":360},{"id":"B-14weXcobM","title":"Logging Trucks – British Columbia Mountain Forest","category":"trucks","start":0,"end":360},{"id":"i3Ecow90ELA","title":"Fastest Woodchopping – Spitzensport","category":"logging","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (II)","category":"football","start":780,"end":1140},{"id":"3WgU-y50028","title":"Washington 4K – Pacific Northwest","category":"nature","start":0,"end":840},{"id":"km7sEn1ZLhc","title":"STIHL TIMBERSPORTS – Team-WM 2023 Highlights","category":"logging","start":0,"end":360},{"id":"3LfgYj0qWXs","title":"Montana – Panorama 4K","category":"nature","start":300,"end":1080},{"id":"OAyPVVEwdmo","title":"Extreme Logging Trucks 1 – Kenworth 850","category":"trucks","start":540,"end":900},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (II)","category":"football","start":780,"end":1140},{"id":"hHJMKT_RXtI","title":"PBR – Unforgettable Moments August 2025","category":"western","start":0,"end":360},{"id":"JghhtQmdv88","title":"USA – Mountains & National Parks","category":"nature","start":43,"end":883},{"id":"DYxdTZFboeU","title":"STIHL European Trophy 2025","category":"logging","start":0,"end":360},{"id":"LGzOyjUm6iw","title":"Extreme Logging Trucks 7 – Pacific P16 Cat 3406","category":"trucks","start":240,"end":600},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (II)","category":"football","start":780,"end":1140},{"id":"FNbwJf_hoiM","title":"Yellowstone – Yellowstone 4K Nature","category":"nature","start":0,"end":780},{"id":"dMlfxLe5qUQ","title":"Montana – Real Cattle Drive","category":"western","start":180,"end":540},{"id":"eAnh07RgJq8","title":"Logging Trucks #50 – Heavy Haul","category":"trucks","start":0,"end":360},{"id":"89LEDK5gpis","title":"STIHL World Trophy 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (II)","category":"football","start":780,"end":1140},{"id":"QMCa79JZQBg","title":"Montana – Glacier National Park","category":"nature","start":120,"end":960},{"id":"HZ4NobL2fNk","title":"STIHL TIMBERSPORTS – Canadian Pro Championship 2024","category":"logging","start":0,"end":360},{"id":"8gbIf3sOifs","title":"Utah – Arches, Zion, Felsen","category":"nature","start":240,"end":1020},{"id":"uLFBRnGQOZw","title":"Extreme Logging Trucks 5 – Kenworth 850","category":"trucks","start":720,"end":1080},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (II)","category":"football","start":780,"end":1140},{"id":"pNBsr6b_Bwg","title":"Montana – Dryhead Ranch","category":"western","start":180,"end":540},{"id":"n_PqI9Ten_U","title":"Montana – Green Valleys & Big Sky","category":"nature","start":0,"end":840},{"id":"xdkLrdO7sPs","title":"STIHL World Trophy 2024 – Recap","category":"logging","start":0,"end":360},{"id":"hNKSYQhStbI","title":"Extreme Logging Trucks 6 – Kenworth W900B & Waterfall","category":"trucks","start":300,"end":660},{"id":"Kd5FfcQ2nAk","title":"NFL – Top 100 Catches 2025","category":"football","start":30,"end":390},{"id":"E4BeiKa1TAA","title":"Rocky Mountain National Park","category":"nature","start":0,"end":780},{"id":"VaaPEefUc5I","title":"Montana Cowboys – Cattle Drive","category":"western","start":120,"end":480},{"id":"ouBY0hOIk28","title":"Kenworth 850 – Coastal Logging","category":"trucks","start":0,"end":360},{"id":"UsSMNX_5kp0","title":"STIHL Individual WM – Episode 2","category":"logging","start":0,"end":360},{"id":"WMRt9N-W0eo","title":"NFL – Top 100 Runs (All Time)","category":"football","start":30,"end":390},{"id":"2L8VX4KLpDc","title":"Wyoming – Wildnis & Grand Teton","category":"nature","start":0,"end":840},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Part II","category":"logging","start":954,"end":1314},{"id":"EXw5W6e55Sk","title":"Canadian Rockies – Lake Louise","category":"nature","start":240,"end":1020},{"id":"Igq7cFswGcs","title":"Ford Raptor R – Extreme Offroad","category":"trucks","start":0,"end":360},{"id":"579J5uqQ8N0","title":"NFL – Top 100 Catches (All Time)","category":"football","start":30,"end":390},{"id":"AMzvqGeDdvk","title":"Montana Cattle Drive – The Real West","category":"western","start":180,"end":540},{"id":"uioAcUziNjU","title":"NFL – Top 100 Moves 2025","category":"football","start":30,"end":390},{"id":"nrwBdIK1RHA","title":"STIHL Individual WM – Episode 3","category":"logging","start":0,"end":360},{"id":"btO_lHZhXoM","title":"Jeep Rubicon – Extreme Offroad Trail","category":"trucks","start":360,"end":720},{"id":"7AfEjKekOa0","title":"NFL – Top 100 Catches 2024","category":"football","start":30,"end":390},{"id":"G3SXQhyECLA","title":"Montana – Rocky-Mountain-Winter","category":"nature","start":240,"end":1020},{"id":"RfsEUlDLnqw","title":"Montana Ranch – Cattle Gathering Drone Footage","category":"western","start":0,"end":360},{"id":"PsvhKQqV3ug","title":"Jeep Rubicon – Moab Utah","category":"trucks","start":0,"end":360},{"id":"Q4GbB7YkUGQ","title":"Tigercat – Logging in Pacific Northwest","category":"logging","start":0,"end":360},{"id":"T_oL1cedJis","title":"Canadian Rockies – Moraine Lake","category":"nature","start":180,"end":1020}];
+  const defaultClips = [{"id":"J7C2CuMd8hE","title":"Montana – Big Sky Country","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights I","category":"logging","start":0,"end":360},{"id":"Gf5rSeTKpj4","title":"Canada 4K – Soaring over Canada","category":"nature","start":189,"end":969},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest I","category":"trucks","start":0,"end":360},{"id":"m5FCw0K7kaY","title":"College Football 2025 – ESPN Season Highlights","category":"football","start":30,"end":390},{"id":"mV3CwxshqA8","title":"PBR – Top Rides 2025","category":"western","start":0,"end":360},{"id":"J2NGbj0i-7U","title":"Alaska – Aleuten, Wildtiere & Luftaufnahmen","category":"nature","start":500,"end":1340},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks I","category":"trucks","start":0,"end":360},{"id":"WbBPe8DODvk","title":"College Football 2024 – Top 100 Plays (PSC)","category":"football","start":30,"end":390},{"id":"4Z9mUjtFJYY","title":"USA 4K – Montana, Wyoming, Utah & Southwest","category":"nature","start":1029,"end":1809},{"id":"Wrcaa1TZcsc","title":"PBR Teams – Top Rides 2025","category":"western","start":0,"end":360},{"id":"a2KQMLrLi_w","title":"Logging Trucks – Loaded Direct from the Mountains","category":"trucks","start":0,"end":360},{"id":"qSNFgOrqW-4","title":"STIHL Teams WM 2024 – Holzfäller","category":"logging","start":0,"end":360},{"id":"_ejSiZrJGts","title":"College Football 2024/25 – ESPN Highlights","category":"football","start":390,"end":750},{"id":"TEoLTOQTxPw","title":"Alaska 8K – Brown Bears & Wildnis","category":"nature","start":549,"end":1389},{"id":"TND5yat9fh8","title":"STIHL TIMBERSPORTS – Team-WM 2022 Highlights","category":"logging","start":0,"end":360},{"id":"PSOsQTjw9Jo","title":"Glacier National Park – Bergseen","category":"nature","start":120,"end":900},{"id":"RiUYPLk3I-k","title":"Log Truck Driver – Vancouver Island","category":"trucks","start":0,"end":360},{"id":"Gg_t30Lkmuw","title":"College Football 2024/25 – MAC Highlights (ESPN)","category":"football","start":30,"end":390},{"id":"ZgM1r-IIrtI","title":"PBR – Memorable Moments September 2025","category":"western","start":0,"end":360},{"id":"TpXP8xssr08","title":"Yellowstone Sommer – Naturaufnahmen","category":"nature","start":720,"end":1560},{"id":"k6gFpXnBxjI","title":"STIHL Individual WM 2025 – Highlights","category":"logging","start":0,"end":360},{"id":"07dW_dsSbnI","title":"Extreme Logging Trucks 8 – Kenworth 850 Knox Bay","category":"trucks","start":360,"end":720},{"id":"m5FCw0K7kaY","title":"College Football 2025 – ESPN Season Highlights","category":"football","start":750,"end":1110},{"id":"O7UbV04A3FU","title":"Grand Teton – Rocky Mountains","category":"nature","start":300,"end":1080},{"id":"IW8tIuDWLRo","title":"PBR – Top Moments October 2025","category":"western","start":0,"end":360},{"id":"B-14weXcobM","title":"Logging Trucks – British Columbia Mountain Forest","category":"trucks","start":0,"end":360},{"id":"i3Ecow90ELA","title":"Fastest Woodchopping – Spitzensport","category":"logging","start":0,"end":360},{"id":"BJSlWxBQfwg","title":"College Football 2023 – Top 100 Plays (PSC)","category":"football","start":390,"end":750},{"id":"3WgU-y50028","title":"Washington 4K – Pacific Northwest","category":"nature","start":0,"end":840},{"id":"km7sEn1ZLhc","title":"STIHL TIMBERSPORTS – Team-WM 2023 Highlights","category":"logging","start":0,"end":360},{"id":"3LfgYj0qWXs","title":"Montana – Panorama 4K","category":"nature","start":300,"end":1080},{"id":"OAyPVVEwdmo","title":"Extreme Logging Trucks 1 – Kenworth 850","category":"trucks","start":540,"end":900},{"id":"_ejSiZrJGts","title":"College Football 2024/25 – ESPN Highlights","category":"football","start":1110,"end":1470},{"id":"hHJMKT_RXtI","title":"PBR – Unforgettable Moments August 2025","category":"western","start":0,"end":360},{"id":"JghhtQmdv88","title":"USA – Mountains & National Parks","category":"nature","start":43,"end":883},{"id":"DYxdTZFboeU","title":"STIHL European Trophy 2025","category":"logging","start":0,"end":360},{"id":"LGzOyjUm6iw","title":"Extreme Logging Trucks 7 – Pacific P16 Cat 3406","category":"trucks","start":240,"end":600},{"id":"WbBPe8DODvk","title":"College Football 2024 – Top 100 Plays (PSC)","category":"football","start":750,"end":1110},{"id":"FNbwJf_hoiM","title":"Yellowstone – Yellowstone 4K Nature","category":"nature","start":0,"end":780},{"id":"dMlfxLe5qUQ","title":"Montana – Real Cattle Drive","category":"western","start":180,"end":540},{"id":"eAnh07RgJq8","title":"Logging Trucks #50 – Heavy Haul","category":"trucks","start":0,"end":360},{"id":"89LEDK5gpis","title":"STIHL World Trophy 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"m5FCw0K7kaY","title":"College Football 2025 – ESPN Season Highlights","category":"football","start":1470,"end":1830},{"id":"QMCa79JZQBg","title":"Montana – Glacier National Park","category":"nature","start":120,"end":960},{"id":"HZ4NobL2fNk","title":"STIHL TIMBERSPORTS – Canadian Pro Championship 2024","category":"logging","start":0,"end":360},{"id":"8gbIf3sOifs","title":"Utah – Arches, Zion, Felsen","category":"nature","start":240,"end":1020},{"id":"uLFBRnGQOZw","title":"Extreme Logging Trucks 5 – Kenworth 850","category":"trucks","start":720,"end":1080},{"id":"Gg_t30Lkmuw","title":"College Football 2024/25 – MAC Highlights (ESPN)","category":"football","start":750,"end":1110},{"id":"pNBsr6b_Bwg","title":"Montana – Dryhead Ranch","category":"western","start":180,"end":540},{"id":"n_PqI9Ten_U","title":"Montana – Green Valleys & Big Sky","category":"nature","start":0,"end":840},{"id":"xdkLrdO7sPs","title":"STIHL World Trophy 2024 – Recap","category":"logging","start":0,"end":360},{"id":"hNKSYQhStbI","title":"Extreme Logging Trucks 6 – Kenworth W900B & Waterfall","category":"trucks","start":300,"end":660},{"id":"BJSlWxBQfwg","title":"College Football 2023 – Top 100 Plays (PSC)","category":"football","start":1110,"end":1470},{"id":"E4BeiKa1TAA","title":"Rocky Mountain National Park","category":"nature","start":0,"end":780},{"id":"VaaPEefUc5I","title":"Montana Cowboys – Cattle Drive","category":"western","start":120,"end":480},{"id":"ouBY0hOIk28","title":"Kenworth 850 – Coastal Logging","category":"trucks","start":0,"end":360},{"id":"UsSMNX_5kp0","title":"STIHL Individual WM – Episode 2","category":"logging","start":0,"end":360},{"id":"_ejSiZrJGts","title":"College Football 2024/25 – ESPN Highlights","category":"football","start":1830,"end":2190},{"id":"2L8VX4KLpDc","title":"Wyoming – Wildnis & Grand Teton","category":"nature","start":0,"end":840},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Part II","category":"logging","start":954,"end":1314},{"id":"EXw5W6e55Sk","title":"Canadian Rockies – Lake Louise","category":"nature","start":240,"end":1020},{"id":"Igq7cFswGcs","title":"Ford Raptor R – Extreme Offroad","category":"trucks","start":0,"end":360},{"id":"WbBPe8DODvk","title":"College Football 2024 – Top 100 Plays (PSC)","category":"football","start":1470,"end":1830},{"id":"AMzvqGeDdvk","title":"Montana Cattle Drive – The Real West","category":"western","start":180,"end":540},{"id":"m5FCw0K7kaY","title":"College Football 2025 – ESPN Season Highlights","category":"football","start":2190,"end":2550},{"id":"nrwBdIK1RHA","title":"STIHL Individual WM – Episode 3","category":"logging","start":0,"end":360},{"id":"btO_lHZhXoM","title":"Jeep Rubicon – Extreme Offroad Trail","category":"trucks","start":360,"end":720},{"id":"Gg_t30Lkmuw","title":"College Football 2024/25 – MAC Highlights (ESPN)","category":"football","start":1470,"end":1830},{"id":"G3SXQhyECLA","title":"Montana – Rocky-Mountain-Winter","category":"nature","start":240,"end":1020},{"id":"RfsEUlDLnqw","title":"Montana Ranch – Cattle Gathering Drone Footage","category":"western","start":0,"end":360},{"id":"PsvhKQqV3ug","title":"Jeep Rubicon – Moab Utah","category":"trucks","start":0,"end":360},{"id":"Q4GbB7YkUGQ","title":"Tigercat – Logging in Pacific Northwest","category":"logging","start":0,"end":360},{"id":"T_oL1cedJis","title":"Canadian Rockies – Moraine Lake","category":"nature","start":180,"end":1020}];
+  const previousDefaultV21 = [{"id":"J7C2CuMd8hE","title":"Montana – Big Sky Country","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights I","category":"logging","start":0,"end":360},{"id":"Gf5rSeTKpj4","title":"Canada 4K – Soaring over Canada","category":"nature","start":189,"end":969},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest I","category":"trucks","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (I)","category":"football","start":30,"end":390},{"id":"mV3CwxshqA8","title":"PBR – Top Rides 2025","category":"western","start":0,"end":360},{"id":"J2NGbj0i-7U","title":"Alaska – Aleuten, Wildtiere & Luftaufnahmen","category":"nature","start":500,"end":1340},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks I","category":"trucks","start":0,"end":360},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (I)","category":"football","start":30,"end":390},{"id":"4Z9mUjtFJYY","title":"USA 4K – Montana, Wyoming, Utah & Southwest","category":"nature","start":1029,"end":1809},{"id":"Wrcaa1TZcsc","title":"PBR Teams – Top Rides 2025","category":"western","start":0,"end":360},{"id":"a2KQMLrLi_w","title":"Logging Trucks – Loaded Direct from the Mountains","category":"trucks","start":0,"end":360},{"id":"qSNFgOrqW-4","title":"STIHL Teams WM 2024 – Holzfäller","category":"logging","start":0,"end":360},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (I)","category":"football","start":30,"end":390},{"id":"TEoLTOQTxPw","title":"Alaska 8K – Brown Bears & Wildnis","category":"nature","start":549,"end":1389},{"id":"TND5yat9fh8","title":"STIHL TIMBERSPORTS – Team-WM 2022 Highlights","category":"logging","start":0,"end":360},{"id":"PSOsQTjw9Jo","title":"Glacier National Park – Bergseen","category":"nature","start":120,"end":900},{"id":"RiUYPLk3I-k","title":"Log Truck Driver – Vancouver Island","category":"trucks","start":0,"end":360},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (I)","category":"football","start":30,"end":390},{"id":"ZgM1r-IIrtI","title":"PBR – Memorable Moments September 2025","category":"western","start":0,"end":360},{"id":"TpXP8xssr08","title":"Yellowstone Sommer – Naturaufnahmen","category":"nature","start":720,"end":1560},{"id":"k6gFpXnBxjI","title":"STIHL Individual WM 2025 – Highlights","category":"logging","start":0,"end":360},{"id":"07dW_dsSbnI","title":"Extreme Logging Trucks 8 – Kenworth 850 Knox Bay","category":"trucks","start":360,"end":720},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (I)","category":"football","start":30,"end":390},{"id":"O7UbV04A3FU","title":"Grand Teton – Rocky Mountains","category":"nature","start":300,"end":1080},{"id":"IW8tIuDWLRo","title":"PBR – Top Moments October 2025","category":"western","start":0,"end":360},{"id":"B-14weXcobM","title":"Logging Trucks – British Columbia Mountain Forest","category":"trucks","start":0,"end":360},{"id":"i3Ecow90ELA","title":"Fastest Woodchopping – Spitzensport","category":"logging","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (II)","category":"football","start":780,"end":1140},{"id":"3WgU-y50028","title":"Washington 4K – Pacific Northwest","category":"nature","start":0,"end":840},{"id":"km7sEn1ZLhc","title":"STIHL TIMBERSPORTS – Team-WM 2023 Highlights","category":"logging","start":0,"end":360},{"id":"3LfgYj0qWXs","title":"Montana – Panorama 4K","category":"nature","start":300,"end":1080},{"id":"OAyPVVEwdmo","title":"Extreme Logging Trucks 1 – Kenworth 850","category":"trucks","start":540,"end":900},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (II)","category":"football","start":780,"end":1140},{"id":"hHJMKT_RXtI","title":"PBR – Unforgettable Moments August 2025","category":"western","start":0,"end":360},{"id":"JghhtQmdv88","title":"USA – Mountains & National Parks","category":"nature","start":43,"end":883},{"id":"DYxdTZFboeU","title":"STIHL European Trophy 2025","category":"logging","start":0,"end":360},{"id":"LGzOyjUm6iw","title":"Extreme Logging Trucks 7 – Pacific P16 Cat 3406","category":"trucks","start":240,"end":600},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (II)","category":"football","start":780,"end":1140},{"id":"FNbwJf_hoiM","title":"Yellowstone – Yellowstone 4K Nature","category":"nature","start":0,"end":780},{"id":"dMlfxLe5qUQ","title":"Montana – Real Cattle Drive","category":"western","start":180,"end":540},{"id":"eAnh07RgJq8","title":"Logging Trucks #50 – Heavy Haul","category":"trucks","start":0,"end":360},{"id":"89LEDK5gpis","title":"STIHL World Trophy 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (II)","category":"football","start":780,"end":1140},{"id":"QMCa79JZQBg","title":"Montana – Glacier National Park","category":"nature","start":120,"end":960},{"id":"HZ4NobL2fNk","title":"STIHL TIMBERSPORTS – Canadian Pro Championship 2024","category":"logging","start":0,"end":360},{"id":"8gbIf3sOifs","title":"Utah – Arches, Zion, Felsen","category":"nature","start":240,"end":1020},{"id":"uLFBRnGQOZw","title":"Extreme Logging Trucks 5 – Kenworth 850","category":"trucks","start":720,"end":1080},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (II)","category":"football","start":780,"end":1140},{"id":"pNBsr6b_Bwg","title":"Montana – Dryhead Ranch","category":"western","start":180,"end":540},{"id":"n_PqI9Ten_U","title":"Montana – Green Valleys & Big Sky","category":"nature","start":0,"end":840},{"id":"xdkLrdO7sPs","title":"STIHL World Trophy 2024 – Recap","category":"logging","start":0,"end":360},{"id":"hNKSYQhStbI","title":"Extreme Logging Trucks 6 – Kenworth W900B & Waterfall","category":"trucks","start":300,"end":660},{"id":"Kd5FfcQ2nAk","title":"NFL – Top 100 Catches 2025","category":"football","start":30,"end":390},{"id":"E4BeiKa1TAA","title":"Rocky Mountain National Park","category":"nature","start":0,"end":780},{"id":"VaaPEefUc5I","title":"Montana Cowboys – Cattle Drive","category":"western","start":120,"end":480},{"id":"ouBY0hOIk28","title":"Kenworth 850 – Coastal Logging","category":"trucks","start":0,"end":360},{"id":"UsSMNX_5kp0","title":"STIHL Individual WM – Episode 2","category":"logging","start":0,"end":360},{"id":"WMRt9N-W0eo","title":"NFL – Top 100 Runs (All Time)","category":"football","start":30,"end":390},{"id":"2L8VX4KLpDc","title":"Wyoming – Wildnis & Grand Teton","category":"nature","start":0,"end":840},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Part II","category":"logging","start":954,"end":1314},{"id":"EXw5W6e55Sk","title":"Canadian Rockies – Lake Louise","category":"nature","start":240,"end":1020},{"id":"Igq7cFswGcs","title":"Ford Raptor R – Extreme Offroad","category":"trucks","start":0,"end":360},{"id":"579J5uqQ8N0","title":"NFL – Top 100 Catches (All Time)","category":"football","start":30,"end":390},{"id":"AMzvqGeDdvk","title":"Montana Cattle Drive – The Real West","category":"western","start":180,"end":540},{"id":"uioAcUziNjU","title":"NFL – Top 100 Moves 2025","category":"football","start":30,"end":390},{"id":"nrwBdIK1RHA","title":"STIHL Individual WM – Episode 3","category":"logging","start":0,"end":360},{"id":"btO_lHZhXoM","title":"Jeep Rubicon – Extreme Offroad Trail","category":"trucks","start":360,"end":720},{"id":"7AfEjKekOa0","title":"NFL – Top 100 Catches 2024","category":"football","start":30,"end":390},{"id":"G3SXQhyECLA","title":"Montana – Rocky-Mountain-Winter","category":"nature","start":240,"end":1020},{"id":"RfsEUlDLnqw","title":"Montana Ranch – Cattle Gathering Drone Footage","category":"western","start":0,"end":360},{"id":"PsvhKQqV3ug","title":"Jeep Rubicon – Moab Utah","category":"trucks","start":0,"end":360},{"id":"Q4GbB7YkUGQ","title":"Tigercat – Logging in Pacific Northwest","category":"logging","start":0,"end":360},{"id":"T_oL1cedJis","title":"Canadian Rockies – Moraine Lake","category":"nature","start":180,"end":1020}];
   // Exakter vorheriger V2.0-Stand zur verlustfreien Erkennung unmodifizierter Sammlungen.
   const previousDefaultClips = [{"id":"J7C2CuMd8hE","title":"Montana – Big Sky Country","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights I","category":"logging","start":0,"end":360},{"id":"Gf5rSeTKpj4","title":"Canada 4K – Soaring over Canada","category":"nature","start":0,"end":780},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest I","category":"trucks","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (I)","category":"football","start":30,"end":390},{"id":"mV3CwxshqA8","title":"PBR – Top Rides 2025","category":"western","start":0,"end":360},{"id":"J2NGbj0i-7U","title":"Alaska – Aleutian Islands","category":"nature","start":500,"end":1340},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks I","category":"trucks","start":0,"end":360},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (I)","category":"football","start":30,"end":390},{"id":"4Z9mUjtFJYY","title":"USA 4K – Montana, Wyoming & Utah","category":"nature","start":1029,"end":1809},{"id":"Wrcaa1TZcsc","title":"PBR Teams – Top Rides 2025","category":"western","start":0,"end":360},{"id":"5fDCg8fPJEA","title":"Kenworth, Peterbilt & Western Star","category":"trucks","start":0,"end":360},{"id":"qSNFgOrqW-4","title":"STIHL Teams WM 2024 – Holzfäller","category":"logging","start":0,"end":360},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (I)","category":"football","start":30,"end":390},{"id":"TEoLTOQTxPw","title":"Alaska 8K – Brown Bears & Wildnis","category":"nature","start":549,"end":1389},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights II","category":"logging","start":360,"end":720},{"id":"PSOsQTjw9Jo","title":"Glacier National Park – Bergseen","category":"nature","start":120,"end":900},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest II","category":"trucks","start":360,"end":720},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (I)","category":"football","start":30,"end":390},{"id":"CZt3LkB3BHo","title":"PBR – Top 30 Bucking Bulls","category":"western","start":0,"end":360},{"id":"TpXP8xssr08","title":"Yellowstone Sommer – Naturaufnahmen","category":"nature","start":720,"end":1560},{"id":"k6gFpXnBxjI","title":"STIHL Individual WM 2025 – Highlights","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks II","category":"trucks","start":360,"end":720},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (I)","category":"football","start":30,"end":390},{"id":"O7UbV04A3FU","title":"Grand Teton – Rocky Mountains","category":"nature","start":300,"end":1080},{"id":"IW8tIuDWLRo","title":"PBR – Top Moments October 2025","category":"western","start":0,"end":360},{"id":"sMrmAW91mYY","title":"Tri-Drive Logging Trucks – British Columbia","category":"trucks","start":0,"end":360},{"id":"i3Ecow90ELA","title":"Fastest Woodchopping – Spitzensport","category":"logging","start":0,"end":360},{"id":"bOGGoY4KLZo","title":"NFL – Top 100 Plays 2025 (II)","category":"football","start":780,"end":1140},{"id":"3WgU-y50028","title":"Washington 4K – Pacific Northwest","category":"nature","start":0,"end":840},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights III","category":"logging","start":720,"end":1080},{"id":"3LfgYj0qWXs","title":"Montana – Panorama 4K","category":"nature","start":300,"end":1080},{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest III","category":"trucks","start":720,"end":1080},{"id":"Y--mkdhOxwE","title":"NFL – Top 100 Plays 2024 (II)","category":"football","start":780,"end":1140},{"id":"hHJMKT_RXtI","title":"PBR – Most Unforgettable Rides","category":"western","start":0,"end":360},{"id":"JghhtQmdv88","title":"USA – Mountains & National Parks","category":"nature","start":43,"end":883},{"id":"DYxdTZFboeU","title":"STIHL European Trophy 2025","category":"logging","start":0,"end":360},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks III","category":"trucks","start":720,"end":1080},{"id":"tJFHlzw8vVE","title":"NFL – Top 100 Plays 2023 (II)","category":"football","start":780,"end":1140},{"id":"FNbwJf_hoiM","title":"Yellowstone – Yellowstone 4K Nature","category":"nature","start":0,"end":780},{"id":"dMlfxLe5qUQ","title":"Montana – Real Cattle Drive","category":"western","start":180,"end":540},{"id":"eAnh07RgJq8","title":"Logging Trucks #50 – Heavy Haul","category":"trucks","start":0,"end":360},{"id":"89LEDK5gpis","title":"STIHL World Trophy 2024 – Highlights","category":"logging","start":0,"end":360},{"id":"nUEwompnajU","title":"NFL – Top 100 Plays 2022 (II)","category":"football","start":780,"end":1140},{"id":"QMCa79JZQBg","title":"Montana – Glacier National Park","category":"nature","start":120,"end":960},{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights IV","category":"logging","start":1080,"end":1440},{"id":"8gbIf3sOifs","title":"Utah – Arches, Zion, Felsen","category":"nature","start":240,"end":1020},{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks IV","category":"trucks","start":1080,"end":1440},{"id":"iYSSTSKTGzo","title":"NFL – Top 100 Runs 2025 (II)","category":"football","start":780,"end":1140},{"id":"pNBsr6b_Bwg","title":"Montana – Dryhead Ranch","category":"western","start":180,"end":540},{"id":"n_PqI9Ten_U","title":"Montana – Green Valleys & Big Sky","category":"nature","start":0,"end":840},{"id":"xdkLrdO7sPs","title":"STIHL World Trophy 2024 – Recap","category":"logging","start":0,"end":360},{"id":"wxziQ41r0N0","title":"Kenworth T800 & W900 Logging Trucks","category":"trucks","start":0,"end":360},{"id":"Kd5FfcQ2nAk","title":"NFL – Top 100 Catches 2025","category":"football","start":30,"end":390},{"id":"E4BeiKa1TAA","title":"Rocky Mountain National Park","category":"nature","start":0,"end":780},{"id":"VaaPEefUc5I","title":"Montana Cowboys – Cattle Drive","category":"western","start":120,"end":480},{"id":"ouBY0hOIk28","title":"Kenworth 850 – Coastal Logging","category":"trucks","start":0,"end":360},{"id":"UsSMNX_5kp0","title":"STIHL Individual WM – Episode 2","category":"logging","start":0,"end":360},{"id":"WMRt9N-W0eo","title":"NFL – Top 100 Runs (All Time)","category":"football","start":30,"end":390},{"id":"2L8VX4KLpDc","title":"Wyoming – Wildnis & Grand Teton","category":"nature","start":0,"end":840},{"id":"0pFN9GUSjGg","title":"STIHL Individual WM 2024 – Part II","category":"logging","start":360,"end":720},{"id":"EXw5W6e55Sk","title":"Canadian Rockies – Lake Louise","category":"nature","start":240,"end":1020},{"id":"Igq7cFswGcs","title":"Ford Raptor R – Extreme Offroad","category":"trucks","start":0,"end":360},{"id":"579J5uqQ8N0","title":"NFL – Top 100 Catches (All Time)","category":"football","start":30,"end":390},{"id":"AMzvqGeDdvk","title":"Montana Cattle Drive – The Real West","category":"western","start":180,"end":540},{"id":"T_oL1cedJis","title":"Canadian Rockies – Moraine Lake","category":"nature","start":180,"end":1020},{"id":"nrwBdIK1RHA","title":"STIHL Individual WM – Episode 3","category":"logging","start":0,"end":360},{"id":"btO_lHZhXoM","title":"Jeep Rubicon – Extreme Offroad Trail","category":"trucks","start":360,"end":720},{"id":"7AfEjKekOa0","title":"NFL – Top 100 Catches 2024","category":"football","start":30,"end":390},{"id":"G3SXQhyECLA","title":"Montana – Rocky-Mountain-Winter","category":"nature","start":240,"end":1020},{"id":"8Ror9GqvJR4","title":"Cowboys & Ranching – Historical Film","category":"western","start":120,"end":480},{"id":"PsvhKQqV3ug","title":"Jeep Rubicon – Moab Utah","category":"trucks","start":0,"end":360},{"id":"Q4GbB7YkUGQ","title":"Tigercat – Logging in Pacific Northwest","category":"logging","start":0,"end":360},{"id":"uioAcUziNjU","title":"NFL – Top 100 Moves 2025","category":"football","start":30,"end":390}];
   // Für die 13 neuen Testquellen: älteren Clip automatisch bei Problemen ausprobieren.
   const candidateBackup = {"a2KQMLrLi_w":{"id":"5fDCg8fPJEA","title":"Kenworth, Peterbilt & Western Star","category":"trucks","start":0,"end":360},"TND5yat9fh8":{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights II","category":"logging","start":360,"end":720},"RiUYPLk3I-k":{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest II","category":"trucks","start":360,"end":720},"ZgM1r-IIrtI":{"id":"CZt3LkB3BHo","title":"PBR – Top 30 Bucking Bulls","category":"western","start":0,"end":360},"07dW_dsSbnI":{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks II","category":"trucks","start":360,"end":720},"B-14weXcobM":{"id":"sMrmAW91mYY","title":"Tri-Drive Logging Trucks – British Columbia","category":"trucks","start":0,"end":360},"km7sEn1ZLhc":{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights III","category":"logging","start":720,"end":1080},"OAyPVVEwdmo":{"id":"noGe6ahEivw","title":"US Logging Trucks – Forest III","category":"trucks","start":720,"end":1080},"LGzOyjUm6iw":{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks III","category":"trucks","start":720,"end":1080},"HZ4NobL2fNk":{"id":"3eC5r7xH_lw","title":"STIHL Teams WM 2025 – Highlights IV","category":"logging","start":1080,"end":1440},"uLFBRnGQOZw":{"id":"QIREelKLpI0","title":"Forest Roads – Loaded Trucks IV","category":"trucks","start":1080,"end":1440},"hNKSYQhStbI":{"id":"wxziQ41r0N0","title":"Kenworth T800 & W900 Logging Trucks","category":"trucks","start":0,"end":360},"RfsEUlDLnqw":{"id":"8Ror9GqvJR4","title":"Cowboys & Ranching – Historical Film","category":"western","start":120,"end":480}};
-  const isTrial = c => !!candidateBackup[c.id];
+  // Football-Quellen: recherchiert, aber Einbettbarkeit wird erst vom Nutzergerät geprüft.
+  // YouTube kann Einbettungen unabhängig vom Kanal sperren (101/150).
+  const footballSources = [{"id":"m5FCw0K7kaY","name":"College Football 2025 – ESPN Season Highlights","length":3600},{"id":"WbBPe8DODvk","name":"College Football 2024 – Top 100 Plays (PSC)","length":2520},{"id":"_ejSiZrJGts","name":"College Football 2024/25 – ESPN Highlights","length":3600},{"id":"Gg_t30Lkmuw","name":"College Football 2024/25 – MAC Highlights (ESPN)","length":3600},{"id":"BJSlWxBQfwg","name":"College Football 2023 – Top 100 Plays (PSC)","length":2160}];
+  const footballSourceIds = new Set(footballSources.map(s=>s.id));
+  const isTrial = c => !!candidateBackup[c.id] || (c.category==='football' && footballSourceIds.has(c.id));
   const oldSamples = [
 {id:"J7C2CuMd8hE"},{id:"0pFN9GUSjGg"},{id:"PSOsQTjw9Jo"},{id:"OAyPVVEwdmo"},{id:"bOGGoY4KLZo"},{id:"mV3CwxshqA8"}];
   const byId = id => document.getElementById(id);
@@ -263,13 +268,20 @@
   // Automatisch nur dann upgraden, wenn der bisherige Stand GENAU der V2.0-Standardliste entspricht.
   // Eigene Änderungen des Nutzers niemals überschreiben.
   const isOriginalV20 = !!v2Saved && JSON.stringify(v2Saved)===JSON.stringify(previousDefaultClips);
-  const hasOwnCollection = !!v2Saved && !isOriginalV20;
-  let clips = isOriginalV20 ? defaultClips.map(x=>({...x})) : (v2Saved ?? ((v1Saved && !v1OnlySamples) ? v1Saved : defaultClips.map(x=>({...x}))));
+  const isOriginalV21 = !!v2Saved && JSON.stringify(v2Saved)===JSON.stringify(previousDefaultV21);
+  const autoUpgrade = isOriginalV20 || isOriginalV21;
+  const hasOwnCollection = !!v2Saved && !autoUpgrade;
+  let clips = autoUpgrade ? defaultClips.map(x=>({...x})) : (v2Saved ?? ((v1Saved && !v1OnlySamples) ? v1Saved : defaultClips.map(x=>({...x}))));
   let settings = loadJSON(SETTINGS_KEY,loadJSON(OLD_SETTINGS_KEY,{ loop:true, mode:'classic' }));
   if (!settings || typeof settings !== 'object') settings = {loop:true,mode:'classic'};
   let mode = settings.mode === 'mix' ? 'mix' : 'classic', loop = settings.loop !== false;
   let order=[], pos=0, player=null, apiReady=false, currentlyPlaying=false, started=false, editIndex=-1, currentPlayItem=-1, timer=null, pendingStart=false, isCinema=false, switching=false;
   let activeClip=null, triedBackup=false, clipSwitchToken=0, videoDurationChecked=false, changingManually=false;
+  // Merkt sich während dieser Browsersitzung Quellen, die bereits gesperrt sind.
+  const blockedVideoIds = new Set();
+  const playableVideoIds = new Set();
+  let slotAttemptedIds = new Set(), natureFallbackUsed=false;
+  const footballProbe = {active:false, index:0, results:[], timeout:null, began:0};
   let reviews = loadJSON(REVIEW_KEY,{});
   if (!reviews || typeof reviews!=='object' || Array.isArray(reviews)) reviews={};
   let events = loadJSON(LOG_KEY,[]);
@@ -280,7 +292,7 @@
     try{localStorage.setItem(LOG_KEY,JSON.stringify(events));}catch(e){}
   }
   function reviewKey(c){return c?`${c.id}:${c.start}:${c.end}`:'';}
-  if(isOriginalV20){try{localStorage.setItem(KEY,JSON.stringify(clips));}catch(e){}}
+  if(autoUpgrade){try{localStorage.setItem(KEY,JSON.stringify(clips));}catch(e){}}
   function save() { try { localStorage.setItem(KEY,JSON.stringify(clips)); localStorage.setItem(SETTINGS_KEY, JSON.stringify({mode,loop})); } catch(e){status('Browser-Speicher nicht verfügbar. Bitte ein Backup exportieren.',true);} }
   function parseId(raw) {
     const v=raw.trim();
@@ -346,8 +358,12 @@
       width:'100%',height:'100%',
       playerVars:{playsinline:1,autoplay:0,controls:1,rel:0,disablekb:1,fs:1,iv_load_policy:3,origin:location.origin.startsWith('http')?location.origin:undefined},
       events:{
-        onReady:()=> { try {player.mute();} catch(e){} if(pendingStart) playCurrent(); },
+        onReady:()=> { try {player.mute();} catch(e){} if(footballProbe.active) playFootballProbe(); else if(pendingStart) playCurrent(); },
         onStateChange: e => {
+          if(footballProbe.active){
+            if(e.data===YT.PlayerState.ENDED) finishFootballProbe(false,'Video vorzeitig beendet');
+            return;
+          }
           if(e.data===YT.PlayerState.ENDED){
             if(!started)return;
             // YouTube kann VOR dem gewählten Endpunkt stoppen (Quellvideo zu kurz).
@@ -355,12 +371,20 @@
             if(activeClip && where < activeClip.end-2){handleBadClip('Video endet vor dem gewünschten Clipende ('+fmt(where)+' / '+fmt(activeClip.end)+')');}
             else {switching=false;advance();}
           } else if(e.data===YT.PlayerState.PLAYING){
+            if(activeClip) playableVideoIds.add(activeClip.id);
             currentlyPlaying=true;switching=false;setButtons();
             status(triedBackup?'Ersatzquelle läuft.':(isTrial(current())?'🧪 Neue Videoquelle läuft – mit 👍/👎 bewerten.':'Wiedergabe läuft. Wechsel am Clipende.'));
           } else if(e.data===YT.PlayerState.PAUSED && !switching){currentlyPlaying=false;setButtons();}
         },
-        onError: e => {if(!started)return;handleBadClip('YouTube-Fehler '+e.data);},
-        onAutoplayBlocked:()=> {currentlyPlaying=false;setButtons();status('iPadOS hat die automatische Wiedergabe gestoppt. Bitte auf WEITER tippen.',true);setCover(true);}
+        onError: e => {
+          if(footballProbe.active){finishFootballProbe(false,'YouTube-Fehler '+e.data);return;}
+          if(!started)return;
+          handleBadClip('YouTube-Fehler '+e.data);
+        },
+        onAutoplayBlocked:()=> {
+          if(footballProbe.active){finishFootballProbe(false,'Autoplay von Safari blockiert (Test nicht aussagekräftig)');return;}
+          currentlyPlaying=false;setButtons();status('iPadOS hat die automatische Wiedergabe gestoppt. Bitte auf WEITER tippen.',true);setCover(true);
+        }
       }
     });
   }
@@ -376,9 +400,49 @@
       status((isFallback?'Alte Ersatzquelle':'Clip '+(pos+1))+' wird geladen …');
     } catch(e){handleBadClip('Video konnte nicht geladen werden: '+e.message);}
   }
+  // Video-Quellen wechseln, ohne die feste 6-Minuten-Football-Position zu verkürzen.
+  function footballWindowFor(source, slotIndex){
+    const offsets=[30,390,750,1110,1470];
+    const st=offsets[Math.abs(slotIndex)%offsets.length];
+    return {id:source.id, title:'↪ '+source.name, category:'football', start:st, end:st+360};
+  }
+  function nextFootballSource(){
+    const remaining=footballSources.filter(s=>!slotAttemptedIds.has(s.id)&&!blockedVideoIds.has(s.id));
+    if(!remaining.length)return null;
+    const chosen=remaining[0];
+    return footballWindowFor(chosen,currentPlayItem);
+  }
+  function tryFootballFallback(reason){
+    const original=current();
+    if(!original || original.category!=='football')return false;
+    const next=nextFootballSource();
+    if(next){
+      slotAttemptedIds.add(next.id);
+      addEvent('fallback','Football-Quelle '+(activeClip?.id||'')+' fehlgeschlagen ('+reason+'); teste '+next.id);
+      triedBackup=true;
+      actuallyLoadClip(next,true);
+      status('🏈 '+reason+' – nächste Football-Quelle wird probiert.',true);
+      return true;
+    }
+    if(!natureFallbackUsed){
+      natureFallbackUsed=true;
+      // Dieser Montana-Film wurde vom Nutzer bereits erfolgreich abgespielt.
+      const offset=(Math.max(0,currentPlayItem)%2)*360;
+      const scenery={id:'J7C2CuMd8hE',title:'Montana – Naturersatz für gesperrten Football-Clip',category:'nature',start:offset,end:offset+360};
+      addEvent('fallback','Alle bekannten Football-Quellen in diesem Versuch gesperrt; Montana als Naturersatz');
+      actuallyLoadClip(scenery,true);
+      status('⚠️ Keine Football-Quelle spielbar. Stattdessen 6 Minuten Montana.',true);
+      return true;
+    }
+    return false;
+  }
   function handleBadClip(reason) {
     if(!started)return;
     addEvent('problem',reason);
+    if(activeClip && /YouTube-Fehler (?:100|101|150)\b/.test(reason)){
+      blockedVideoIds.add(activeClip.id);
+    }
+    if(tryFootballFallback(reason))return;
     const alt=!triedBackup && current() && candidateBackup[current().id];
     if(alt){
       triedBackup=true;addEvent('fallback','Testquelle fehlgeschlagen. Ältere Videoquelle: '+alt.id);
@@ -387,7 +451,6 @@
     } else {
       switching=false;currentlyPlaying=false;addEvent('skip','Clip übersprungen');
       status('⚠️ Clip nicht spielbar: '+reason+'. Weiter zum nächsten Clip.',true);
-      // Kleiner Aufschub, um YouTube-Fehler nicht in einer Dauerschleife zu triggern.
       const token=clipSwitchToken;
       setTimeout(()=>{if(token===clipSwitchToken && started)advance();},900);
     }
@@ -397,7 +460,66 @@
     if(!order.length) refreshOrder();
     const c=current();if(!c){status('Kein Clip gefunden.',true);return;}
     currentPlayItem=order[pos];started=true;pendingStart=false;triedBackup=false;
+    slotAttemptedIds=new Set();natureFallbackUsed=false;
+    if(c.category==='football' && blockedVideoIds.has(c.id)){
+      slotAttemptedIds.add(c.id);
+      const alt=nextFootballSource();
+      if(alt){slotAttemptedIds.add(alt.id);actuallyLoadClip(alt,true);return;}
+      const original={id:'J7C2CuMd8hE',title:'Montana – Ersatzbild für Football',category:'nature',start:0,end:360};
+      natureFallbackUsed=true;actuallyLoadClip(original,true);return;
+    }
+    if(c.category==='football')slotAttemptedIds.add(c.id);
     actuallyLoadClip(c);
+  }
+  // Kurzer praktischer Einbettungstest: YouTube-API auf dem iPad ist maßgeblich.
+  function playFootballProbe(){
+    if(!footballProbe.active)return;
+    clearTimeout(footballProbe.timeout);
+    const source=footballSources[footballProbe.index];
+    if(!source){endFootballProbe();return;}
+    const sample={id:source.id,title:'Test '+(footballProbe.index+1)+'/5 – '+source.name,category:'football',start:20,end:45};
+    activeClip=sample; footballProbe.began=Date.now();
+    byId('now-title').textContent=sample.title;
+    byId('now-category').textContent='🏈 TEST';
+    setCover(false);
+    status('🏈 Prüfe '+(footballProbe.index+1)+'/5 – '+source.name+' (max. 18 s).');
+    try{player.mute();player.loadVideoById({videoId:source.id,startSeconds:20,endSeconds:45});}
+    catch(e){finishFootballProbe(false,'Player-Ladefehler: '+e.message);return;}
+    footballProbe.timeout=setTimeout(()=>finishFootballProbe(false,'Keine nachgewiesene Wiedergabe innerhalb von 18 s'),18000);
+  }
+  function finishFootballProbe(passed,reason){
+    if(!footballProbe.active)return;
+    clearTimeout(footballProbe.timeout);
+    const source=footballSources[footballProbe.index];
+    if(passed)playableVideoIds.add(source.id);
+    if(!passed && /Fehler (?:100|101|150)\b/.test(reason))blockedVideoIds.add(source.id);
+    footballProbe.results.push({id:source.id,title:source.name,works:passed,detail:reason});
+    addEvent('football-probe',(passed?'SPIELBAR: ':'NICHT BESTÄTIGT: ')+source.id+' – '+reason);
+    footballProbe.index++;
+    // Entfernt alte YouTube-Ereignisse soweit möglich vor dem nächsten Video.
+    if(footballProbe.index<footballSources.length){
+      setTimeout(()=>{if(footballProbe.active)playFootballProbe();},700);
+    }else{endFootballProbe();}
+  }
+  function endFootballProbe(){
+    if(!footballProbe.active)return;
+    clearTimeout(footballProbe.timeout);
+    footballProbe.active=false;
+    const good=footballProbe.results.filter(r=>r.works).length;
+    started=false;currentlyPlaying=false;pendingStart=false;activeClip=null;
+    try{player.stopVideo();}catch(e){}
+    refreshOrder();setCover(true);setButtons();updateProgress();
+    status('🏈 Test abgeschlossen: '+good+'/'+footballProbe.results.length+' Quellen spielbar. Bitte „⬇ Testbericht“ herunterladen und hier senden. '+(good?'Beim Abspielen werden erfolgreiche Quellen bevorzugt.':'Wenn alle gesperrt bleiben, nutzt der Loop 6 Minuten Montana statt Football.'),good===0);
+    render();
+  }
+  function startFootballProbe(){
+    if(footballProbe.active)return;
+    if(started && !confirm('Laufende Wiedergabe für den Football-Test unterbrechen?'))return;
+    try{player?.stopVideo();}catch(e){}
+    started=false;currentlyPlaying=false;pendingStart=false;
+    footballProbe.active=true;footballProbe.index=0;footballProbe.results=[];
+    status('🏈 Starte Einbettungstest für fünf Football-Quellen …');
+    if(!player){prepareApi();}else{playFootballProbe();}
   }
   function start() {
     if(!clips.length){status('Füge zuerst einen Clip hinzu.',true);return;}
@@ -538,14 +660,26 @@
   }
   byId('btn-good').addEventListener('click',()=>rateClip('good'));
   byId('btn-bad').addEventListener('click',()=>rateClip('bad'));
+  byId('football-test-btn').addEventListener('click',startFootballProbe);
   byId('report-btn').addEventListener('click',()=>{
-    const report={app:'Wilderness Loop',version:'2.1',createdAt:new Date().toISOString(),remarks:'Automatisch erkannte Video-Probleme und manuelle Bewertungen vom iPad; keine automatische Sichtprüfung aller Szenen.',events,reviews,clips};
+    const report={app:'Wilderness Loop',version:'2.2',createdAt:new Date().toISOString(),footballProbeResults:footballProbe.results,blockedSources:[...blockedVideoIds],playableSources:[...playableVideoIds],remarks:'Automatisch erkannte Video-Probleme und manuelle Bewertungen vom iPad; keine automatische Sichtprüfung aller Szenen.',events,reviews,clips};
     const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='wilderness-loop-testbericht.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
     status('Testbericht exportiert. Die JSON-Datei kannst du mir hier hochladen, damit ich die problematischen Clips gezielt verbessere.');
   });
-  byId('reset-btn').addEventListener('click',()=>{if(confirm('Die gesamte Clipbibliothek durch WILDERNESS LOOP 2.1 (75 Clips, 13 neue Quellen im Test) ersetzen? Eigene Änderungen gehen verloren. Am besten vorher Backup erstellen.')){clips=defaultClips.map(x=>({...x}));clearForm();restartAfterChange();status('Wilderness Loop 2.1 mit 13 neuen Testquellen geladen.');}});
+  byId('reset-btn').addEventListener('click',()=>{if(confirm('Die gesamte Clipbibliothek durch WILDERNESS LOOP 2.2 (75 Clips, College-Football-Quellen) ersetzen? Eigene Änderungen gehen verloren. Am besten vorher Backup erstellen.')){clips=defaultClips.map(x=>({...x}));clearForm();restartAfterChange();status('Wilderness Loop 2.2 geladen: 15 Football-Positionen mit fünf neuen Quellen.');}});
   timer=setInterval(()=>{
+    if(footballProbe.active){
+      try{
+        if(player){
+          const t=Number(player.getCurrentTime());
+          if(Number.isFinite(t) && t>=23 && player.getPlayerState()===YT.PlayerState.PLAYING){
+            finishFootballProbe(true,'Wiedergabe von mindestens 3 Sekunden bestätigt');
+          }
+        }
+      }catch(e){}
+      return;
+    }
     if(!player || !started || !currentlyPlaying || !current())return;
     try {
       const c=activeClip || current(), t=Number(player.getCurrentTime());if(!Number.isFinite(t))return;
@@ -590,8 +724,8 @@
   });
 
   refreshOrder();render();setButtons();updateProgress();drawPlaylist();
-  if(isOriginalV20)status('✅ Deine unveränderte V2.0-Playlist wurde automatisch auf V2.1 aktualisiert. Die 13 neuen Clips sind mit 🧪 markiert.');
-  else if(hasOwnCollection)status('Deine eigene/gespeicherte Bibliothek wurde nicht überschrieben. Falls du alle 75 neuen Clips möchtest: erst Backup, dann rechts „↺ V2.1 laden“.');
+  if(autoUpgrade)status('✅ Standard-Playlist wurde auf V2.2 aktualisiert. Für neue Football-Quellen: erst 🏈 Quellen testen.');
+  else if(hasOwnCollection)status('Deine eigene Bibliothek bleibt erhalten. Für neue Football-Quellen: erst Backup, dann „↺ V2.2 laden“.');
 })();
 </script>
 </body>
