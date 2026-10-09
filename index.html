@@ -83,6 +83,8 @@
     footer { margin:25px auto 0; text-align:center; color:#879b89; font-size:11px; max-width:730px; }
     .theater { position:fixed !important; inset:0 !important; z-index:1000 !important; width:100vw !important; height:100dvh !important; aspect-ratio:auto !important; border-radius:0 !important; }
     .theater #yt-player,.theater iframe { height:100% !important; width:100% !important; }
+    .video-shell:fullscreen,.video-shell:-webkit-full-screen { width:100vw !important; height:100vh !important; min-height:0 !important; background:#000; border-radius:0; }
+    .video-shell:fullscreen #yt-player,.video-shell:fullscreen iframe,.video-shell:-webkit-full-screen #yt-player,.video-shell:-webkit-full-screen iframe { width:100% !important; height:100% !important; }
     .theater-actions { position:absolute; top:max(13px,env(safe-area-inset-top)); right:18px; z-index:4; display:flex; gap:8px; }
     .theater-actions button { background:rgba(15,23,17,.88); border-color:#62705f; }
     .cover.theater-cover { z-index:3; }
@@ -126,7 +128,7 @@
 <body>
 <header class="top"><div class="top-inner">
   <div><div class="eyebrow">Independent home cinema · The American Experience</div><h1>🌲 Wilderness <span style="color:var(--amber)">Loop</span></h1><div class="subtitle">Mountains · Logging · Trucks · Football · Rodeo</div></div>
-  <div class="badge">AMERICAN EXPERIENCE · V2.1 TEST</div>
+  <div class="badge">AMERICAN EXPERIENCE · V2.1.1 FULLSCREEN TEST</div>
 </div></header>
 <main class="container">
   <nav class="main-nav" aria-label="Wilderness Loop Navigation">
@@ -162,7 +164,7 @@
             <button type="button" class="btn" id="btn-next">⏭ NÄCHSTER CLIP</button>
             <button type="button" class="btn" id="btn-mode">🔀 SMART MIX: AUS</button>
             <button type="button" class="btn active" id="btn-loop">🔁 LOOP: AN</button>
-            <button type="button" class="btn" id="btn-cinema">⛶ KINOMODUS</button>
+            <button type="button" class="btn" id="btn-cinema">⛶ VOLLBILD / KINOMODUS</button>
             <button type="button" class="btn btn-quiet" id="btn-good" title="Aktuellen Clip als passend markieren">👍 PASST</button>
             <button type="button" class="btn btn-quiet" id="btn-bad" title="Aktuellen Clip zur Überarbeitung markieren">👎 ÄNDERN</button>
           </div>
@@ -321,7 +323,7 @@
     apiReady=true;
     player = new YT.Player('yt-player', {
       width:'100%',height:'100%',
-      playerVars:{playsinline:1,autoplay:0,controls:1,rel:0,disablekb:1,fs:0,iv_load_policy:3,origin:location.origin.startsWith('http')?location.origin:undefined},
+      playerVars:{playsinline:1,autoplay:0,controls:1,rel:0,disablekb:1,fs:1,iv_load_policy:3,origin:location.origin.startsWith('http')?location.origin:undefined},
       events:{
         onReady:()=> { try {player.mute();} catch(e){} if(pendingStart) playCurrent(); },
         onStateChange: e => {
@@ -402,7 +404,52 @@
     playCurrent();
   }
   function nextClip(){if(!clips.length)return; switching=false;clipSwitchToken++;advance();}
-  function showCinema(on){isCinema=on;byId('video-shell').classList.toggle('theater',on);byId('theater-actions').classList.toggle('hidden',!on);document.body.style.overflow=on?'hidden':'';if(on)status('Kinomodus aktiv. Beim iPad für die Beamerprojektion möglichst im Querformat verwenden.');}
+  // iPadOS 16.4+ supports true fullscreen for arbitrary page elements. Keep a
+  // cinema-mode CSS fallback for browsers/AirPlay mirroring that reject it.
+  async function showCinema(on){
+    const shell=byId('video-shell');
+    if(on){
+      isCinema=true;
+      shell.classList.add('theater');
+      byId('theater-actions').classList.remove('hidden');
+      document.body.style.overflow='hidden';
+      try {
+        if(typeof shell.requestFullscreen==='function'){
+          await shell.requestFullscreen();
+          status('Echter Vollbildmodus aktiv. Im Querformat testen.');
+        } else if(typeof shell.webkitRequestFullscreen==='function'){
+          await shell.webkitRequestFullscreen();
+          status('Echter Vollbildmodus aktiviert.');
+        } else {
+          status('Kinomodus aktiv. Dieser Browser bietet kein echtes Element-Vollbild. Die AirPlay-Bildschirmspiegelung kann schwarze Ränder behalten.');
+        }
+      } catch(e){
+        status('Kinomodus aktiv. Echter Vollbildmodus wurde von Safari/AirPlay nicht zugelassen; bitte Querformat oder HDMI testen.');
+      }
+    } else {
+      isCinema=false;
+      shell.classList.remove('theater');
+      byId('theater-actions').classList.add('hidden');
+      document.body.style.overflow='';
+      if(document.fullscreenElement || document.webkitFullscreenElement){
+        try {
+          if(document.exitFullscreen) await document.exitFullscreen();
+          else if(document.webkitExitFullscreen) await document.webkitExitFullscreen();
+        } catch(e){}
+      }
+    }
+  }
+  // If the user leaves fullscreen via Safari's gesture/escape, restore the UI.
+  function onNativeFullscreenChange(){
+    if(!document.fullscreenElement && !document.webkitFullscreenElement && isCinema){
+      isCinema=false;
+      byId('video-shell').classList.remove('theater');
+      byId('theater-actions').classList.add('hidden');
+      document.body.style.overflow='';
+    }
+  }
+  document.addEventListener('fullscreenchange',onNativeFullscreenChange);
+  document.addEventListener('webkitfullscreenchange',onNativeFullscreenChange);
   function edit(i){ const c=clips[i]; if(!c)return;editIndex=i;byId('clip-url').value='https://www.youtube.com/watch?v='+c.id;byId('clip-title').value=c.title;byId('clip-start').value=fmt(c.start);byId('clip-end').value=fmt(c.end);byId('clip-category').value=c.category;byId('edit-heading').textContent='✎ Clip bearbeiten';byId('save-clip').textContent='ÄNDERUNGEN SPEICHERN';byId('cancel-edit').classList.remove('hidden');byId('clip-form').scrollIntoView({behavior:'smooth',block:'center'}); }
   function clearForm(){editIndex=-1;byId('clip-form').reset();byId('clip-start').value='00:00';byId('clip-end').value='05:00';byId('edit-heading').textContent='+ YouTube-Ausschnitt hinzufügen';byId('save-clip').textContent='+ CLIP SPEICHERN';byId('cancel-edit').classList.add('hidden');}
   function restartAfterChange(){save();refreshOrder();if(started){started=false;currentlyPlaying=false;activeClip=null;currentPlayItem=-1;clipSwitchToken++;if(player && player.stopVideo) try{player.stopVideo();}catch(e){}setCover(true);setButtons();status('Bibliothek gespeichert. Drücke START, um die aktualisierte Playlist zu starten.');}render();drawPlaylist();}
